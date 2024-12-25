@@ -1,0 +1,33 @@
+<!-- templates/components/reports/chart.html -->
+<div class="card">
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold">{{ chart.title }}</h3>
+        <div class="flex gap-2">
+            <select class="bg-[var(--dark-surface)] border border-[var(--dark-border)] rounded px-2 py-1"
+                    hx-get="/api/chart-data"
+                    hx-target="#chart-{{ chart.id }}"
+                    name="period">
+                <option value="7d">Last 7 days</option>
+                <option value="30d">Last 30 days</option>
+                <option value="90d">Last 90 days</option>
+            </select>
+            <button class="text-gray-400 hover:text-white"
+                    _="on click toggle .hidden on the next <div/>">
+                <svg class="w-5 h-5"><!-- Info icon --></svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="hidden bg-[var(--dark-border)] p-3 rounded-lg mb-4 text-sm">
+        {{ chart.description }}
+    </div>
+
+    <div id="chart-{{ chart.id }}" 
+         class="h-64"
+         hx-get="/api/chart-data"
+         hx-trigger="load"
+         hx-vals='{"type": "{{ chart.type }}", "period": "7d"}'
+         _="on htmx:afterSettle call renderChart(event.detail.content)">
+        <!-- Chart rendered via JavaScript -->
+    </div>
+</div>

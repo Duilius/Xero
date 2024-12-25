@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/dashboard_main.css">
+    <title>Dashboard</title>
+</head>
+<body>
+    <!-- Botón de Modo Oscuro/Claro -->
+    <button id="toggle-theme" class="theme-toggle">Switch Theme</button>
+
+    <!-- Formulario -->
+    <div class="form-container">
+        <form id="data-form">
+            <label for="tenant-id">Organization:</label>
+            <select id="tenant-id" name="tenant_id">
+                <option value="org1">Organization 1</option>
+                <option value="org2">Organization 2</option>
+            </select>
+
+            <label for="data-type">Data Type:</label>
+            <select id="data-type" name="data_type">
+                <option value="invoices">Invoices</option>
+                <option value="contacts">Contacts</option>
+            </select>
+
+            <label for="start-date">Start Date:</label>
+            <input type="date" id="start-date" name="start_date">
+
+            <label for="end-date">End Date:</label>
+            <input type="date" id="end-date" name="end_date">
+
+            <button type="button" id="modal-button">Show Data</button>
+        </form>
+    </div>
+
+    <!-- Espacio para el Modal -->
+    <div id="modal-container" class="modal hidden">
+        <div class="modal-content">
+            <h2>Invoices Summary</h2>
+            
+            <!-- Resumen -->
+            <div class="summary">
+                <p><strong>Total Invoices:</strong> <span id="total-invoices"></span></p>
+                <p><strong>Total Taxes:</strong> $<span id="total-taxes"></span></p>
+                <p><strong>Date Range:</strong> <span id="date-range"></span></p>
+            </div>
+            
+            <!-- Indicadores -->
+            <div class="indicators">
+                <div class="indicator">
+                    <p>Total Amount</p>
+                    <h3 id="total-amount">$0.00</h3>
+                </div>
+                <div class="indicator">
+                    <p>Pending Amount</p>
+                    <h3 id="pending-amount">$0.00</h3>
+                </div>
+            </div>
+            
+            <!-- Gráficas -->
+            <div class="charts">
+                <canvas id="bar-chart"></canvas>
+                <canvas id="pie-chart"></canvas>
+            </div>
+            
+            <button id="close-modal">Close</button>
+        </div>
+    </div>
+    
+
+    <script src="/static/js/dashboard_main.js"></script>
+    <script src="/static/js/connect_formModal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</body>
+</html>

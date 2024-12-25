@@ -1,0 +1,57 @@
+<!-- templates/pages/dashboard.html -->
+{% extends "layout/base.html" %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+    <!-- Sidebar -->
+    <aside class="md:col-span-3 space-y-4">
+        {% include "components/dashboard/sidebar.html" %}
+    </aside>
+
+    <!-- Main Content -->
+    <div class="md:col-span-9 space-y-6">
+        <!-- Stats Overview -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {% include "components/dashboard/stats.html" %}
+        </section>
+
+        <!-- Recent Activity -->
+        <section class="card">
+            <h2 class="text-xl font-semibold mb-4">Recent Activity</h2>
+            <div hx-get="/api/activities" 
+                 hx-trigger="load"
+                 hx-swap="innerHTML">
+                <!-- Activity content loaded via HTMX -->
+            </div>
+        </section>
+
+        <!-- Organizations Grid -->
+        <section class="card">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold">Organizations</h2>
+                <button class="btn btn-primary"
+                        hx-get="/organizations/new"
+                        hx-target="#modal"
+                        _="on click remove .hidden from #modal">
+                    Add Organization
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4"
+                 hx-get="/api/organizations" 
+                 hx-trigger="load, organizationAdded from:body">
+                <!-- Organizations loaded via HTMX -->
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- Modal Template -->
+<div id="modal" 
+     class="fixed inset-0 bg-black bg-opacity-50 hidden z-50"
+     _="on click if target.id is 'modal' add .hidden to me">
+    <div class="max-w-md mx-auto mt-20 bg-[var(--dark-surface)] rounded-lg p-6">
+        <!-- Modal content loaded via HTMX -->
+    </div>
+</div>
+{% endblock %}

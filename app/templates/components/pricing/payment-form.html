@@ -1,0 +1,15 @@
+# templates/components/pricing/payment-form.html
+<div class="space-y-6">
+    <div id="payment-element">
+        <!-- Stripe Elements se montará aquí -->
+    </div>
+    
+    <button class="btn btn-primary w-full"
+            _="on click add .loading to me
+               wait 2s
+               remove .loading from me"
+            type="submit">
+        <span class="loading-spinner hidden"></span>
+        Subscribe Now
+    </button>
+</div>

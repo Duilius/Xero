@@ -1,0 +1,37 @@
+# templates/components/pricing/plans.html
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    {% for plan in plans %}
+    <div class="card relative {{ 'border-[var(--primary)]' if plan.popular }}">
+        {% if plan.popular %}
+        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2">
+            <span class="bg-[var(--primary)] text-white px-3 py-1 rounded-full text-sm">
+                Most Popular
+            </span>
+        </div>
+        {% endif %}
+        
+        <div class="text-center mb-6">
+            <h3 class="text-xl font-semibold">{{ plan.name }}</h3>
+            <div class="mt-2">
+                <span class="text-3xl font-bold">${{ plan.price }}</span>
+                <span class="text-gray-400">/month</span>
+            </div>
+        </div>
+        
+        <ul class="space-y-3 mb-6">
+            {% for feature in plan.features %}
+            <li class="flex items-center gap-2">
+                <svg class="w-5 h-5 text-[var(--primary)]"><!-- Check icon --></svg>
+                <span>{{ feature }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+        
+        <button class="w-full btn {{ 'btn-primary' if plan.popular else '' }}"
+                hx-get="/subscribe/{{ plan.id }}"
+                hx-target="#modal-content">
+            {{ 'Start Free Trial' if plan.free_trial else 'Subscribe Now' }}
+        </button>
+    </div>
+    {% endfor %}
+</div>

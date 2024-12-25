@@ -1,0 +1,39 @@
+<!-- components/dashboard/organization-card.html -->
+<div class="card hover:border-[var(--primary)] transition-all">
+    <div class="flex justify-between items-start mb-4">
+        <div>
+            <h3 class="text-lg font-semibold">{{ organization.name }}</h3>
+            <p class="text-sm text-gray-400">{{ organization.industry }}</p>
+        </div>
+        <span class="px-2 py-1 rounded text-xs {{ 'bg-green-500/20 text-green-400' if organization.is_connected else 'bg-gray-500/20 text-gray-400' }}">
+            {{ 'Connected' if organization.is_connected else 'Not Connected' }}
+        </span>
+    </div>
+    
+    <div class="space-y-2">
+        <div class="flex justify-between text-sm">
+            <span class="text-gray-400">Last sync</span>
+            <span>{{ organization.last_sync|timeago }}</span>
+        </div>
+        <div class="flex justify-between text-sm">
+            <span class="text-gray-400">Active modules</span>
+            <span>{{ organization.active_modules|length }}</span>
+        </div>
+    </div>
+    
+    <div class="mt-4 flex justify-end gap-2">
+        <button class="btn text-sm"
+                hx-get="/organizations/{{ organization.id }}/details"
+                hx-target="#modal"
+                _="on click remove .hidden from #modal">
+            View Details
+        </button>
+        {% if not organization.is_connected %}
+        <button class="btn btn-primary text-sm"
+                hx-post="/organizations/{{ organization.id }}/connect"
+                hx-target="closest div">
+            Connect
+        </button>
+        {% endif %}
+    </div>
+</div>

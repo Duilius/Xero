@@ -1,0 +1,90 @@
+<!-- Notification Components -->
+<!-- templates/components/notifications/toast.html -->
+<div class="notification-system fixed top-4 right-4 z-50 w-96 space-y-4"
+     _="on showNotification(type, message) call showToast(type, message)">
+    
+    <template id="toast-template">
+        <div class="notification rounded-lg p-4 transform translate-x-full transition-transform duration-300"
+             _="on load wait 10ms then add .translate-x-0
+                init set my.timeoutId to null
+                on mouseenter clear my.timeoutId
+                on mouseleave wait 5s then call hideToast(me)">
+            <div class="flex items-start gap-3">
+                <span class="notification-icon text-2xl"></span>
+                <p class="flex-1 notification-message"></p>
+                <button class="text-gray-400 hover:text-white"
+                        _="on click call hideToast(closest '.notification')">
+                    ×
+                </button>
+            </div>
+        </div>
+    </template>
+</div>
+
+<!-- Live Notifications Panel -->
+<div id="notifications-panel"
+     class="fixed bottom-20 right-6 w-96 bg-[var(--dark-surface)] rounded-lg shadow-lg border border-[var(--dark-border)] transform transition-transform duration-300"
+     _="on togglePanel toggle .translate-y-full">
+    
+    <div class="p-4 border-b border-[var(--dark-border)]">
+        <h3 class="font-semibold">Notifications</h3>
+    </div>
+
+    <div class="max-h-96 overflow-y-auto">
+        <div class="divide-y divide-[var(--dark-border)]"
+             hx-get="/api/notifications"
+             hx-trigger="load, every 30s">
+            {% for notification in notifications %}
+            <div class="p-4 hover:bg-[var(--dark-border)] transition-colors">
+                <div class="flex items-start gap-3">
+                    <span class="{{ notification.icon_class }} text-xl"></span>
+                    <div class="flex-1">
+                        <p class="text-sm">{{ notification.message }}</p>
+                        <span class="text-xs text-gray-400">{{ notification.time|timeago }}</span>
+                    </div>
+                    {% if not notification.read %}
+                    <button class="text-xs text-[var(--primary)]"
+                            hx-post="/api/notifications/{{ notification.id }}/read"
+                            hx-swap="outerHTML">
+                        Mark as read
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript para notificaciones -->
+<script>
+function showToast(type, message) {
+    const template = document.getElementById('toast-template');
+    const toast = template.content.cloneNode(true).children[0];
+    
+    const icons = {
+        success: '✓',
+        error: '✕',
+        warning: '⚠',
+        info: 'ℹ'
+    };
+    
+    const colors = {
+        success: 'text-green-400',
+        error: 'text-red-400',
+        warning: 'text-yellow-400',
+        info: 'text-blue-400'
+    };
+    
+    toast.querySelector('.notification-icon').textContent = icons[type];
+    toast.querySelector('.notification-icon').classList.add(colors[type]);
+    toast.querySelector('.notification-message').textContent = message;
+    
+    document.querySelector('.notification-system').appendChild(toast);
+}
+
+function hideToast(toast) {
+    toast.classList.add('translate-x-full');
+    setTimeout(() => toast.remove(), 300);
+}
+</script>

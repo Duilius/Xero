@@ -1,0 +1,143 @@
+<!-- templates/pages/reports.html -->
+{% extends "layout/base.html" %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Filters -->
+    <div class="card">
+        <form class="grid grid-cols-1 md:grid-cols-4 gap-4"
+              hx-get="/api/reports"
+              hx-target="#reports-content"
+              hx-trigger="change"
+              hx-push-url="true">
+            
+            <div class="space-y-2">
+                <label class="text-sm text-gray-400">Organization</label>
+                <select name="org_id" class="w-full bg-[var(--dark-surface)] border border-[var(--dark-border)] rounded">
+                    <option value="">All Organizations</option>
+                    {% for org in organizations %}
+                    <option value="{{ org.id }}">{{ org.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-sm text-gray-400">Date Range</label>
+                <select name="date_range" class="w-full bg-[var(--dark-surface)] border border-[var(--dark-border)] rounded">
+                    <option value="7d">Last 7 days</option>
+                    <option value="30d">Last 30 days</option>
+                    <option value="90d">Last 90 days</option>
+                    <option value="custom">Custom Range</option>
+                </select>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-sm text-gray-400">Report Type</label>
+                <select name="report_type" class="w-full bg-[var(--dark-surface)] border border-[var(--dark-border)] rounded">
+                    <option value="activity">Activity Report</option>
+                    <option value="reconciliation">Reconciliation Report</option>
+                    <option value="modules">Modules Usage</option>
+                </select>
+            </div>
+
+            <div class="flex items-end">
+                <button type="submit" class="btn btn-primary w-full">
+                    Generate Report
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Report Content -->
+    <div id="reports-content" class="space-y-6">
+        <!-- Charts Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {% include "components/reports/chart.html" %}
+        </div>
+
+        <!-- Data Tables -->
+        <div class="card">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Detailed Data</h3>
+                <button class="btn"
+                        hx-get="/api/reports/export"
+                        hx-trigger="click"
+                        data-download="report.csv">
+                    Export CSV
+                </button>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr>
+                            {% for header in headers %}
+                            <th class="text-left p-3 border-b border-[var(--dark-border)] text-gray-400">
+                                {{ header }}
+                            </th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in data %}
+                        <tr class="hover:bg-[var(--dark-border)]">
+                            {% for cell in row %}
+                            <td class="p-3">{{ cell }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Small amount of JavaScript for chart rendering -->
+<script>
+    document.addEventListener('alpine:init', () => {
+        window.renderChart = (data) => {
+            const ctx = document.getElementById('chart-' + data.id);
+            if (window.charts && window.charts[data.id]) {
+                window.charts[data.id].destroy();
+            }
+            
+            window.charts = window.charts || {};
+            window.charts[data.id] = new Chart(ctx, {
+                type: data.type,
+                data: data.data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#E6E7EC'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#9BA1B0'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#9BA1B0'
+                            }
+                        }
+                    }
+                }
+            });
+        };
+    });
+    </script>
+    {% endblock %}

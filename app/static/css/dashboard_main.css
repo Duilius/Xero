@@ -1,0 +1,225 @@
+/* General Body Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #121212;
+    color: white;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+body.modal-active {
+    overflow: hidden; /* Previene el desplazamiento de la página principal */
+}
+
+body.light-mode {
+    background-color: #f4f4f4;
+    color: black;
+}
+
+/* Botón de Modo Oscuro/Claro */
+.theme-toggle {
+    position: fixed; /* Fijo para que siempre esté en la esquina superior derecha */
+    top: 10px; /* Separación desde el borde superior */
+    right: 10px; /* Separación desde el borde derecho */
+    padding: 5px 15px; /* Ajuste interno del botón */
+    font-size: 0.9rem; /* Tamaño del texto */
+    background-color: #00aaff; /* Color de fondo */
+    color: white; /* Color del texto */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+    z-index: 1000; /* Siempre encima de otros elementos */
+    width: auto; /* Ancho automático */
+    min-width: auto; /* Evita que se expanda automáticamente */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Sombra para darle relieve */
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s;
+}
+
+.theme-toggle:hover {
+    background-color: #0077cc; /* Color más oscuro al pasar el mouse */
+    transform: scale(1.05); /* Efecto de zoom leve */
+}
+
+body.light-mode .theme-toggle {
+    background-color: #0077cc;
+    color: white;
+}
+
+body.light-mode .theme-toggle:hover {
+    background-color: #005f99;
+}
+
+/* Formulario */
+.form-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+body.light-mode .form-container {
+    background-color: #ffffff;
+    color: black;
+}
+
+/* Botones del formulario */
+button {
+    padding: 10px;
+    background-color: #00aaff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0077cc;
+}
+
+body.light-mode button {
+    background-color: #0077cc;
+    color: white;
+}
+
+body.light-mode button:hover {
+    background-color: #005f99;
+}
+
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+body.dark-mode label {
+    color: white;
+}
+
+body.light-mode label {
+    color: black;
+}
+
+input, select, button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: #2a2a2a;
+    color: white;
+}
+
+body.light-mode input, body.light-mode select, body.light-mode button {
+    background-color: #f4f4f4;
+    color: black;
+}
+
+input[type="date"] {
+    width: calc(100% - 20px);
+    max-width: 100%;
+}
+
+/* Modal Styles */
+/*
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+*/
+
+body.light-mode .modal-content {
+    background-color: #f4f4f4;
+    color: black;
+}
+
+
+/*############################  MODAL MEJORADO       ############################*/
+/* Estilo del Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.7); /* Fondo semitransparente */
+    z-index: 1000; /* Asegura que el modal esté sobre el resto */
+}
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    color: #333; /* Texto con suficiente contraste */
+    background-color: #fff; /* Fondo blanco para el contenido del modal */
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto; /* Permite desplazamiento si el contenido excede */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+
+
+.summary {
+    margin-bottom: 20px;
+}
+
+.indicators {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.indicator {
+    background-color: #f9f9f9; /* Fondo claro */
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+    width: 45%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Añade algo de sombra */
+}
+
+.indicator p {
+    font-size: 1em;
+    color: #666; /* Texto más oscuro */
+}
+
+.indicator h3 {
+    margin: 0;
+    font-size: 1.5em;
+    color: #0077cc; /* Asegura visibilidad */
+}
+
+.charts {
+    display: flex;
+    flex-direction: column; /* Para que las gráficas se apilen en mobile */
+    gap: 10px;
+    align-items: center;
+}
+
+.charts canvas {
+    max-width: 90%; /* Ajusta el ancho máximo al 90% del modal */
+    max-height: 300px; /* Limita la altura en versiones de escritorio */
+    width: 100%; /* Asegura que ocupe todo el espacio disponible */
+    height: auto; /* Mantiene la proporción */
+}
