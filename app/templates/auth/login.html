@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+<div class="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8"
+     x-data="{ showModal: false }">
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 class="text-center text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
             Sign in to your account
@@ -10,16 +11,40 @@
 
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div class="bg-white dark:bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
+            <!-- Error Alert -->
+            {% if request.query_params.get('error') %}
+            <div class="mb-4 bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-200 p-4 rounded-md">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm">{{ request.query_params.get('error') }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
             <!-- Xero OAuth Button -->
             <div>
-                <a href="/auth/connect/xero"
-                   class="w-full flex justify-center items-center px-4 py-3 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#13B5EA] hover:bg-[#0DA3D4] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#13B5EA] dark:focus:ring-offset-gray-800">
+                <button 
+                    @click="showModal = true"
+                    class="w-full flex justify-center items-center px-4 py-3 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#13B5EA] hover:bg-[#0DA3D4] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#13B5EA] dark:focus:ring-offset-gray-800"
+                    hx-indicator="#loading-indicator">
                     <svg class="w-5 h-5 mr-2" viewBox="0 0 88 88" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M44 88C68.3005 88 88 68.3005 88 44C88 19.6995 68.3005 0 44 0C19.6995 0 0 19.6995 0 44C0 68.3005 19.6995 88 44 88Z" fill="white"/>
                         <path d="M63.1651 32.5661C63.1651 32.5661 58.8714 25.9313 48.8474 25.9313C38.8235 25.9313 32.8552 32.5661 32.8552 41.0445C32.8552 49.5229 37.8572 54.4831 48.8474 54.4831C59.8377 54.4831 63.1651 47.8483 63.1651 47.8483L71.5927 52.1415C71.5927 52.1415 66.3327 62.5944 48.8474 62.5944C31.3622 62.5944 23.9009 51.5086 23.9009 41.0445C23.9009 30.5804 32.8552 17.82 48.8474 17.82C64.8396 17.82 71.5927 28.9177 71.5927 32.5661H63.1651Z" fill="#13B5EA"/>
                     </svg>
                     Continue with Xero
-                </a>
+                    <div id="loading-indicator" class="htmx-indicator">
+                        <svg class="animate-spin ml-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </div>
+                </button>
             </div>
 
             <div class="mt-6">
@@ -35,13 +60,21 @@
                 </div>
 
                 <!-- Email Form -->
-                <form hx-post="/auth/login" hx-swap="outerHTML" class="mt-6 space-y-6">
+                <form hx-post="/auth/login" 
+                      hx-swap="outerHTML"
+                      hx-indicator="#form-loading"
+                      class="mt-6 space-y-6">
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                             Email address
                         </label>
                         <div class="mt-1">
-                            <input id="email" name="email" type="email" autocomplete="email" required
+                            <input id="email" 
+                                   name="email" 
+                                   type="email" 
+                                   autocomplete="email" 
+                                   required
+                                   hx-validate="true"
                                    class="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white sm:text-sm">
                         </div>
                     </div>
@@ -51,14 +84,20 @@
                             Password
                         </label>
                         <div class="mt-1">
-                            <input id="password" name="password" type="password" autocomplete="current-password" required
+                            <input id="password" 
+                                   name="password" 
+                                   type="password" 
+                                   autocomplete="current-password" 
+                                   required
                                    class="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white sm:text-sm">
                         </div>
                     </div>
 
                     <div class="flex items-center justify-between">
                         <div class="flex items-center">
-                            <input id="remember_me" name="remember_me" type="checkbox"
+                            <input id="remember_me" 
+                                   name="remember_me" 
+                                   type="checkbox"
                                    class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded dark:border-gray-600 dark:bg-gray-700">
                             <label for="remember_me" class="ml-2 block text-sm text-gray-900 dark:text-gray-300">
                                 Remember me
@@ -66,7 +105,8 @@
                         </div>
 
                         <div class="text-sm">
-                            <a href="/auth/forgot-password" class="font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400">
+                            <a href="/auth/forgot-password" 
+                               class="font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400">
                                 Forgot password?
                             </a>
                         </div>
@@ -76,6 +116,12 @@
                         <button type="submit"
                                 class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-800">
                             Sign in
+                            <div id="form-loading" class="htmx-indicator">
+                                <svg class="animate-spin ml-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </div>
                         </button>
                     </div>
                 </form>
@@ -89,5 +135,20 @@
             </a>
         </p>
     </div>
+
+    <!-- Permissions Modal -->
+    <template x-teleport="body">
+        <div x-show="showModal" 
+             class="fixed inset-0 bg-black/50 z-50"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0">
+            
+            {% include 'auth/permissions_modal.html' %}
+        </div>
+    </template>
 </div>
 {% endblock %}

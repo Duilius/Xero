@@ -3,15 +3,93 @@
     <div class="bg-white dark:bg-gray-800 shadow-xl sm:rounded-lg overflow-hidden border border-blue-100 dark:border-blue-900">
         <!-- Header with gradient -->
         <div class="bg-gradient-to-r from-blue-600 to-blue-800 px-4 py-5 sm:px-6">
-            <!-- ... (resto del contenido del modal) ... -->
+            <h3 class="text-lg leading-6 font-medium text-white flex items-center">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                </svg>
+                Xero Integration Permissions
+            </h3>
+            <p class="mt-1 text-sm text-blue-100">
+                Secure and transparent access to your Xero data
+            </p>
+        </div>
+
+        <!-- Permissions with icons -->
+        <div class="px-4 py-5 sm:p-6">
+            <div class="space-y-6">
+                <!-- Balance Sheet -->
+                <div class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg">
+                    <h4 class="text-md font-medium text-gray-900 dark:text-white flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                        Balance Sheet
+                    </h4>
+                    <div class="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                        <p class="font-medium mb-1">Read-only access to Balance Sheet for:</p>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>Identifying accounts receivable and payable between related companies</li>
+                            <li>Validating balances between group companies</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Profit and Loss -->
+                <div class="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg">
+                    <h4 class="text-md font-medium text-gray-900 dark:text-white flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path>
+                        </svg>
+                        Profit and Loss
+                    </h4>
+                    <div class="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                        <p class="font-medium mb-1">Read-only access to Profit and Loss for:</p>
+                        <ul class="list-disc pl-5 space-y-1">
+                            <li>Verifying transactions between related companies</li>
+                            <li>Validating intercompany loan impacts</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Security Notes -->
+                <div class="mt-6 bg-green-50 dark:bg-green-900/30 p-4 rounded-lg">
+                    <h4 class="text-md font-medium text-gray-900 dark:text-white flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                        Security & Control
+                    </h4>
+                    <ul class="mt-2 space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                        <li class="flex items-center">
+                            <svg class="w-4 h-4 mr-2 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Revoke permissions anytime from Xero dashboard
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-4 h-4 mr-2 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Read-only access - no modifications to your data
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-4 h-4 mr-2 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Bank-level security standards
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
         <!-- Action Footer -->
         <div class="px-4 py-4 bg-gray-50 dark:bg-gray-700 sm:px-6 flex justify-end space-x-3">
-            <button onclick="closeModal()" class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-500">
+            <button @click="showModal = false" class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-500">
                 Cancel
             </button>
-            <button onclick="proceedToXero()" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 flex items-center">
+            <button @click="showModal = false; window.location.href='/auth/connect/xero'" 
+                    class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 flex items-center">
                 Continue
                 <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
