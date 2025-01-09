@@ -1,0 +1,106 @@
+{% extends "base_home.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="container mx-auto px-4 py-16 md:py-24">
+    <div class="max-w-4xl mx-auto text-center">
+        <h1 class="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+            Cloud Automation Services for Modern Business
+        </h1>
+        <p class="text-xl text-gray-600 dark:text-gray-300 mb-8">
+            Streamline your accounting operations with AI-powered automation and real-time validation.
+        </p>
+        <div class="flex flex-col md:flex-row justify-center gap-4">
+            <a href="/auth/register" 
+               class="px-8 py-4 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-lg">
+                Get Started Free
+            </a>
+            <a href="/demo" 
+               class="px-8 py-4 border border-gray-300 dark:border-gray-600 rounded-lg hover:border-primary-600 text-lg dark:text-white">
+                Request Demo
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="bg-white dark:bg-gray-800">
+    <div class="container mx-auto px-4 py-16">
+        <h2 class="text-3xl font-bold text-center mb-12 text-gray-900 dark:text-white">
+            Powerful Features for Your Business
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Cloud Automation -->
+            <div class="p-6 rounded-lg bg-gray-50 dark:bg-gray-700">
+                <h3 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+                    Cloud Automation
+                </h3>
+                <p class="text-gray-600 dark:text-gray-300">
+                    Automate your cloud services and streamline your business operations efficiently.
+                </p>
+            </div>
+            <!-- AI-Powered -->
+            <div class="p-6 rounded-lg bg-gray-50 dark:bg-gray-700">
+                <h3 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+                    AI-Powered Analytics
+                </h3>
+                <p class="text-gray-600 dark:text-gray-300">
+                    Leverage artificial intelligence to accelerate productivity and gain insights.
+                </p>
+            </div>
+            <!-- Real-time Validation -->
+            <div class="p-6 rounded-lg bg-gray-50 dark:bg-gray-700">
+                <h3 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+                    Real-time Validation
+                </h3>
+                <p class="text-gray-600 dark:text-gray-300">
+                    Instant processing and validation of accounting operations and sales data.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-100 dark:bg-gray-800">
+    <div class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div>
+                <h4 class="font-semibold mb-4 text-gray-900 dark:text-white">Product</h4>
+                <ul class="space-y-2">
+                    <li><a href="/pricing" class="text-gray-600 dark:text-gray-300 hover:text-primary-600">Pricing</a></li>
+                    <li><a href="/enterprise" class="text-gray-600 dark:text-gray-300 hover:text-primary-600">Enterprise</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4 text-gray-900 dark:text-white">Support</h4>
+                <ul class="space-y-2">
+                    <li><a href="/faq" class="text-gray-600 dark:text-gray-300 hover:text-primary-600">FAQ</a></li>
+                    <li><a href="/contact" class="text-gray-600 dark:text-gray-300 hover:text-primary-600">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4 text-gray-900 dark:text-white">Legal</h4>
+                <ul class="space-y-2">
+                    <li><a href="/privacy" class="text-gray-600 dark:text-gray-300 hover:text-primary-600">Privacy</a></li>
+                    <li><a href="/terms" class="text-gray-600 dark:text-gray-300 hover:text-primary-600">Terms</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-4 text-gray-900 dark:text-white">Company</h4>
+                <ul class="space-y-2">
+                    <li><a href="/about" class="text-gray-600 dark:text-gray-300 hover:text-primary-600">About</a></li>
+                    <li><a href="/blog" class="text-gray-600 dark:text-gray-300 hover:text-primary-600">Blog</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Copyright -->
+        <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+            <p class="text-center text-gray-500 dark:text-gray-400">
+                &copy; {{ current_year }} CloudAudit Pro. All rights reserved.
+            </p>
+        </div>
+    </div>
+</footer>
+{% endblock %}
