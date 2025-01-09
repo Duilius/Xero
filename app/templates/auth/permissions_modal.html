@@ -1,0 +1,22 @@
+<!-- Modal content -->
+<div class="relative max-w-3xl mx-auto mt-20">
+    <div class="bg-white dark:bg-gray-800 shadow-xl sm:rounded-lg overflow-hidden border border-blue-100 dark:border-blue-900">
+        <!-- Header with gradient -->
+        <div class="bg-gradient-to-r from-blue-600 to-blue-800 px-4 py-5 sm:px-6">
+            <!-- ... (resto del contenido del modal) ... -->
+        </div>
+
+        <!-- Action Footer -->
+        <div class="px-4 py-4 bg-gray-50 dark:bg-gray-700 sm:px-6 flex justify-end space-x-3">
+            <button onclick="closeModal()" class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-500">
+                Cancel
+            </button>
+            <button onclick="proceedToXero()" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 flex items-center">
+                Continue
+                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>

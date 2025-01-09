@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-h-screen py-12 sm:px-6 lg:px-8">
+    <div class="max-w-3xl mx-auto">
+        <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg overflow-hidden">
+            <!-- Header -->
+            <div class="px-4 py-5 border-b border-gray-200 dark:border-gray-700 sm:px-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+                    Requested Permissions
+                </h3>
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                    Transparency in accessing your Xero information
+                </p>
+            </div>
+
+            <!-- Permissions -->
+            <div class="px-4 py-5 sm:p-6">
+                <div class="space-y-6">
+                    <!-- Balance Sheet -->
+                    <div>
+                        <h4 class="text-md font-medium text-gray-900 dark:text-white">Balance Sheet</h4>
+                        <div class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                            <p>Read-only access to Balance Sheet for:</p>
+                            <ul class="list-disc pl-5 mt-2">
+                                <li>Identifying accounts receivable and payable between related companies</li>
+                                <li>Validating balances between group companies</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Profit and Loss -->
+                    <div>
+                        <h4 class="text-md font-medium text-gray-900 dark:text-white">Profit and Loss</h4>
+                        <div class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                            <p>Read-only access to Profit and Loss for:</p>
+                            <ul class="list-disc pl-5 mt-2">
+                                <li>Verifying transactions between related companies</li>
+                                <li>Validating intercompany loan impacts</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Contacts -->
+                    <div>
+                        <h4 class="text-md font-medium text-gray-900 dark:text-white">Related Companies</h4>
+                        <div class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                            <p>Access to contact information for:</p>
+                            <ul class="list-disc pl-5 mt-2">
+                                <li>Identifying companies within the same group</li>
+                                <li>Establishing relationships between companies</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Transactions -->
+                    <div>
+                        <h4 class="text-md font-medium text-gray-900 dark:text-white">Transactions</h4>
+                        <div class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                            <p>Access to transactions for:</p>
+                            <ul class="list-disc pl-5 mt-2">
+                                <li>Verifying intercompany loans</li>
+                                <li>Validating intercompany movements</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security and Control -->
+            <div class="px-4 py-5 bg-gray-50 dark:bg-gray-700 sm:px-6">
+                <div class="space-y-4">
+                    <h4 class="text-md font-medium text-gray-900 dark:text-white">Control and Security</h4>
+                    <ul class="list-disc pl-5 space-y-2 text-sm text-gray-500 dark:text-gray-400">
+                        <li>You can revoke these permissions at any time from your Xero dashboard</li>
+                        <li>We don't modify any data in your Xero accounts</li>
+                        <li>We only access information necessary for the service</li>
+                        <li>We comply with security and privacy standards</li>
+                    </ul>
+                    
+                    <div class="mt-6 flex items-center justify-end">
+                        <a href="/auth/login" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                            Continue with Xero
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
