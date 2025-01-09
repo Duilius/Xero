@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/dashboard_main.css">
+    <title>Dashboard</title>
+</head>
+<body>
+    <!-- Botón de Modo Oscuro/Claro -->
+    <button id="toggle-theme" class="theme-toggle" aria-label="Switch Theme">Switch Theme</button>
+
+    <!-- Formulario -->
+    <div class="form-container">
+        <form id="data-form">
+            <label for="tenant-id">Organization:</label>
+            <select id="tenant-id" name="tenant_id">
+                <option value="aac47b53-9335-44b9-b15e-97df6993707d">Organization 1</option>
+                <option value="org2">Organization 2</option>
+            </select>
+
+            <label for="data-type">Data Type:</label>
+            <select id="dashboard-type" name="dashboard_type">
+                <option value="invoices">Invoices</option>
+                <option value="contacts">Contacts</option>
+            </select>
+
+            <label for="start-date">Start Date:</label>
+            <input type="date" id="start-date" name="start_date">
+
+            <label for="end-date">End Date:</label>
+            <input type="date" id="end-date" name="end_date">
+
+            <!-- Botones de Dashboard -->
+            <div class="dashboard-buttons">
+                <button type="button" id="dashboard-summary">Summary Dashboard</button>
+                <button type="button" id="dashboard-contact">By Contact</button>
+                <button type="button" id="dashboard-due">By Due Date</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Espacio para el Modal -->
+<div id="modal-container" class="modal hidden" role="dialog" aria-hidden="true">
+    <div class="modal-content">
+        <h2 id="modal-title">Dashboard</h2>
+
+        <!-- Contenido Dinámico del Dashboard -->
+        <div id="dashboard-content" class="dashboard-content">
+            <!-- Aquí se cargará contenido dinámico -->
+        </div>
+
+        <!-- Resumen -->
+        <div class="summary">
+            <p><strong>Total Invoices:</strong> <span id="total-invoices">N/A</span></p>
+            <p><strong>Total Taxes:</strong> $<span id="total-taxes">0.00</span></p>
+            <p><strong>Date Range:</strong> <span id="date-range">N/A</span></p>
+        </div>
+
+        <!-- Indicadores -->
+        <div class="indicators">
+            <div class="indicator">
+                <p>Total Amount</p>
+                <h3 id="total-amount">$0.00</h3>
+            </div>
+            <div class="indicator">
+                <p>Pending Amount</p>
+                <h3 id="pending-amount">$0.00</h3>
+            </div>
+        </div>
+
+        <!-- Gráficas -->
+        <div class="charts">
+            <canvas id="bar-chart" class="chart hidden"></canvas>
+            <canvas id="pie-chart" class="chart hidden"></canvas>
+            <canvas id="line-chart" class="chart hidden"></canvas>
+        </div>
+
+        <!-- Navegación del Modal -->
+        <div class="dashboard-navigation">
+            <button id="to-summary" class="nav-button">Summary</button>
+            <button id="to-contact" class="nav-button">By Contact</button>
+            <button id="to-due" class="nav-button">By Due Date</button>
+        </div>
+
+        <!-- Botón para Cerrar Modal -->
+        <button id="close-modal" aria-label="Close">Close</button>
+    </div>
+</div>
+
+
+    <!-- Carga de Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/static/js/dashboard_main.js"></script>
+</body>
+
+</html>
