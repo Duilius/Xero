@@ -11,13 +11,13 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = "development"
     
     # Database - configuración para Railway
-    MYSQL_TYPE: str = "mysql+pymysql"
+    DB_TYPE: str = "mysql+pymysql"
     DATABASE_URL: Optional[str] = None
-    MYSQL_USER: str
-    MYSQL_PASSWORD: str
-    MYSQL_HOST: str
-    MYSQL_PORT: str
-    MYSQL_DB: str
+    DB_USER: str
+    DB_PASSWORD: str
+    DB_HOST: str
+    DB_PORT: str
+    DB_DB: str
     
     # Security
     SECRET_KEY: str = secrets.token_urlsafe(32)
