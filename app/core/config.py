@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 import secrets
 from pydantic_settings import BaseSettings
 import os
@@ -32,6 +32,11 @@ class Settings(BaseSettings):
     XERO_CLIENT_ID: str = os.getenv('XERO_CLIENT_ID', '')
     XERO_CLIENT_SECRET: str = os.getenv('XERO_CLIENT_SECRET', '')
     XERO_REDIRECT_URI: str = os.getenv('XERO_REDIRECT_URI', '')  # Añadido esta línea
+
+    ADMIN_EMAILS: List[str] = [
+        "duilio@dataextractor.cloud"
+        # Aquí puedes agregar más emails de administradores
+    ]
     
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> str:
