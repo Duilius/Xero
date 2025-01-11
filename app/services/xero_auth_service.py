@@ -3,7 +3,8 @@ from typing import Dict, List, Optional
 import httpx
 import json
 from datetime import datetime, timedelta, timezone
-import jwt as pyjwt
+#import jwt as pyjwt
+from jose import jwt
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 
@@ -341,7 +342,7 @@ class XeroAuthService:
             )
         }
         
-        return pyjwt.encode(
+        return jwt.encode(
             payload,
             self.secret_key,
             algorithm="HS256"
@@ -350,18 +351,18 @@ class XeroAuthService:
     def decode_session_token(self, token: str) -> Dict:
         """Decode and validate a session token."""
         try:
-            payload = pyjwt.decode(
+            payload = jwt.decode(
                 token,
                 self.secret_key,
                 algorithms=["HS256"]
             )
             return payload
-        except pyjwt.ExpiredSignatureError:
+        except jwt.ExpiredSignatureError:
             raise HTTPException(
                 status_code=401,
                 detail="Token has expired"
             )
-        except pyjwt.InvalidTokenError:
+        except jwt.InvalidTokenError:
             raise HTTPException(
                 status_code=401,
                 detail="Invalid token"
