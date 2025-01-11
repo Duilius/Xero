@@ -17,9 +17,7 @@
                 </svg>
                 Sync with Xero
             </button>
-            <span id="sync-status" class="text-sm text-gray-500 dark:text-gray-400">
-                Last synced: {{ last_sync }}
-            </span>
+            <span id="sync-status" class="text-sm text-gray-500 dark:text-gray-400 timestamp" data-utc="{{ last_sync }}">Last synced:{{ last_sync }}</span>
         </div>
     </div>
 
@@ -152,4 +150,24 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function formatLocalTime(utcString) {
+        const date = new Date(utcString);
+        return date.toLocaleString();  // Usa la zona horaria local del navegador
+    }
+    
+    // Convertir todos los timestamps
+    document.addEventListener('DOMContentLoaded', function() {
+        const timeElements = document.querySelectorAll('.timestamp');
+        console.log('Elementos encontrados:', timeElements.length);  // Debug
+        timeElements.forEach(element => {
+            const utcTime = element.getAttribute('data-utc');
+            console.log('UTC time:', utcTime);  // Debug
+            element.textContent = formatLocalTime(utcTime);
+        });
+    });
+    </script>
 {% endblock %}
