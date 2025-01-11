@@ -2,11 +2,18 @@ from fastapi import APIRouter, Depends, Request, HTTPException, Response
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from app.db.session import get_db
-from app.services.xero_oauth import xero_oauth_service
+from app.services.xero_oauth_service import xero_oauth_service
 from app.services.xero_auth_service import xero_auth_service
 import secrets
 from app.core.config import settings
 from fastapi.templating import Jinja2Templates
+import logging
+from app.services.xero_data_service import get_chart_of_accounts
+from app.models.xero_token import XeroToken
+from datetime import datetime, timezone
+from app.utils.date_utils import format_local_datetime
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
@@ -53,99 +60,90 @@ async def connect_xero(response: Response):
 async def oauth_callback(
     request: Request,
     code: str,
-    state: str,
     db: Session = Depends(get_db)
 ):
-    """Handle OAuth callback from Xero."""
-    # Verify state parameter
-    stored_state = request.cookies.get("oauth_state")
-    if not stored_state or stored_state != state:
-        raise HTTPException(status_code=400, detail="Invalid state parameter")
-
     try:
-        # Handle OAuth callback and create session
         auth_result = await xero_auth_service.handle_oauth_callback(db, code)
         
-        # Create response with redirect
-        response = RedirectResponse(url="/dashboard")
+        # Log para debugging (opcional)
+        print("Auth result:", auth_result)
         
-        # Set session cookie
+        response = RedirectResponse(url="/auth/dashboard")
         response.set_cookie(
             key="session",
-            value=auth_result["access_token"],
+            value=auth_result["token"],
             httponly=True,
             secure=True,
             max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
             samesite="lax"
         )
         
-        # Remove state cookie
-        response.delete_cookie("oauth_state")
-        
         return response
         
     except Exception as e:
-        # En caso de error, redirigir a login con mensaje
-        return RedirectResponse(
-            url=f"/auth/login?error={str(e)}",
-            status_code=302
+        print(f"Error in OAuth callback: {str(e)}")  # Log para debugging
+        raise HTTPException(
+            status_code=400,
+            detail=f"OAuth callback error: {str(e)}"
         )
 
 @router.get("/dashboard")
-async def dashboard(
-    request: Request,
-    db: Session = Depends(get_db)
-):
-    """Render dashboard page."""
-    # Mock data for now - we'll replace with real data later
+async def dashboard(request: Request, db: Session = Depends(get_db)):
+    session_token = request.cookies.get("session")
+    session_data = xero_auth_service.decode_session_token(session_token)
+    
+    user_data = session_data["session_data"]["user_info"]
+    organizations = session_data["session_data"]["organizations"]["connections"]
+    last_sync = organizations[0]["last_sync"] if organizations else "Never"
+
+    # Obtener token de la BD para la primera organización
+    token = db.query(XeroToken).filter(
+        XeroToken.tenant_id == organizations[0]["tenant_id"]
+    ).first()
+
+     # Asegurarnos que token_expires_at tenga timezone
+    token_expiry = token.token_expires_at
+    if token_expiry.tzinfo is None:
+        token_expiry = token_expiry.replace(tzinfo=timezone.utc)
+
+    if datetime.now(timezone.utc) >= token_expiry:
+        print("Token expired, refreshing...")
+        new_token = await xero_oauth_service.refresh_access_token(
+            db=db,
+            refresh_token=token.refresh_token
+        )
+        access_token = new_token["access_token"]
+    else:
+        access_token = token.access_token
+
+    # Obtener chart of accounts con el token actualizado
+    accounts = await get_chart_of_accounts(
+        tenant_id=organizations[0]["tenant_id"], 
+        access_token=access_token
+    )
+
+    print("Accounts response:", accounts)  # Debug
+
     context = {
         "request": request,
         "user": {
-            "name": "John Doe",
-            "email": "john@example.com"
+            "name": user_data["name"],
+            "email": user_data["email"]
         },
-        "last_sync": "Today at 2:30 PM",
+        "last_sync": format_local_datetime(organizations[0]["last_sync"]),
+        "last_sync": last_sync,
         "stats": {
-            "org_count": 5,
-            "loan_count": 12,
-            "total_amount": 145000
+            "org_count": len(organizations),
+            "loan_count": 0,  # Por implementar
+            "total_amount": 0  # Por implementar
         },
-        "recent_loans": [
-            {
-                "from_org": "Company A",
-                "to_org": "Company B",
-                "amount": 50000,
-                "status": "active",
-                "date": "2024-01-06"
-            },
-            {
-                "from_org": "Company C",
-                "to_org": "Company D",
-                "amount": 25000,
-                "status": "pending",
-                "date": "2024-01-05"
-            }
+        "recent_loans": [],  # Por implementar
+        "alerts": [],  # Por implementar
+        "organizations": [
+            {"id": org["tenant_id"], "name": org["name"]}
+            for org in organizations
         ],
-        "alerts": [
-            {
-                "type": "warning",
-                "title": "Loan Approval Required",
-                "message": "New loan request from Company B needs your approval",
-                "time": "1 hour ago"
-            },
-            {
-                "type": "info",
-                "title": "Sync Complete",
-                "message": "Successfully synced data with Xero",
-                "time": "2 hours ago"
-            }
-        ],
-        "organizations": [  # Added for organization selector
-            {"id": 1, "name": "Company A"},
-            {"id": 2, "name": "Company B"},
-            {"id": 3, "name": "Company C"}
-        ],
-        "current_org_id": 1  # Added for organization selector
+        "current_org_id": organizations[0]["tenant_id"] if organizations else None
     }
     
     return templates.TemplateResponse("dashboard/index.html", context)
