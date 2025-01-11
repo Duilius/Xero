@@ -152,22 +152,34 @@
 </div>
 {% endblock %}
 
-{% block scripts %}
+{% block extra_scripts %}
 <script>
-    function formatLocalTime(utcString) {
-        const date = new Date(utcString);
-        return date.toLocaleString();  // Usa la zona horaria local del navegador
-    }
-    
-    // Convertir todos los timestamps
+    console.log('Script cargado');
+
     document.addEventListener('DOMContentLoaded', function() {
-        const timeElements = document.querySelectorAll('.timestamp');
-        console.log('Elementos encontrados:', timeElements.length);  // Debug
-        timeElements.forEach(element => {
-            const utcTime = element.getAttribute('data-utc');
-            console.log('UTC time:', utcTime);  // Debug
-            element.textContent = formatLocalTime(utcTime);
-        });
+        console.log('Script ejecutándose');
+        const timeElements = document.getElementsByClassName('timestamp');
+        
+        console.log('Elementos encontrados:', timeElements?.length);
+        
+        if (timeElements && timeElements.length > 0) {
+            Array.from(timeElements).forEach(element => {
+                const utcTime = element.getAttribute('data-utc');
+                console.log('UTC time:', utcTime);
+                if (utcTime) {
+                    element.textContent = new Date(utcTime).toLocaleString(navigator.language, {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                });
+                }
+            });
+        } else {
+            console.log('No se encontraron elementos timestamp');
+        }
     });
-    </script>
+</script>
 {% endblock %}
