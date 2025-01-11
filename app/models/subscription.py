@@ -1,3 +1,6 @@
+from .base import Base, TimestampMixin
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, JSON, BigInteger, Text, UniqueConstraint
+from sqlalchemy.orm import relationship
 # app/db/models/subscription.py
 class Subscription(Base, TimestampMixin):
     __tablename__ = "subscriptions"

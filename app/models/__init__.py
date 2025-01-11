@@ -1,25 +1,17 @@
-# app/models/__init__.py
-from .base import Base
+from .base import Base, TimestampMixin
+from .organization import Organization, OrganizationUser, OrganizationStatus, SubscriptionType
 from .user import User, UserRole, UserStatus
-from .organization import (
-    Organization, 
-    OrganizationUser, 
-    OrganizationRole, 
-    OrganizationStatus,
-    SubscriptionType
-)
-from .xero_token import XeroToken, AuditLog
+from .xero_token import XeroToken
 
 __all__ = [
     'Base',
+    'TimestampMixin',
+    'Organization',
+    'OrganizationUser',
+    'OrganizationStatus',
+    'SubscriptionType',
     'User',
     'UserRole',
     'UserStatus',
-    'Organization',
-    'OrganizationUser',
-    'OrganizationRole',
-    'OrganizationStatus',
-    'SubscriptionType',
-    'XeroToken',
-    'AuditLog',
+    'XeroToken'
 ]
