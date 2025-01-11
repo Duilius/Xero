@@ -63,7 +63,9 @@ async def oauth_callback(
     db: Session = Depends(get_db)
 ):
     try:
+        print(f"Received callback with code: {code}")  # Debug
         auth_result = await xero_auth_service.handle_oauth_callback(db, code)
+        print(f"Auth result: {auth_result}")  # Debug
         
         # Log para debugging (opcional)
         print("Auth result:", auth_result)
@@ -81,7 +83,10 @@ async def oauth_callback(
         return response
         
     except Exception as e:
-        print(f"Error in OAuth callback: {str(e)}")  # Log para debugging
+        print(f"Detailed error in callback: {str(e)}")  # Debug
+        print(f"Exception type: {type(e)}")  # Debug
+        import traceback
+        print(f"Traceback: {traceback.format_exc()}")  # Debug
         raise HTTPException(
             status_code=400,
             detail=f"OAuth callback error: {str(e)}"
