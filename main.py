@@ -7,6 +7,9 @@ from app.core.config import Settings
 from app.api import auth, users, orgs, xero
 from app.core.middlewares import AuthMiddleware
 from app.core.template_filters import format_number
+from app.api import htmx_views
+from app.api import duilius  # Importa el router de Duilius
+#from app.core.middlewares import authenticate_user
 
 app = FastAPI(
     title="Xero Data Extractor",
@@ -53,3 +56,5 @@ app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
 app.include_router(users.router, prefix="/users", tags=["Users"])
 app.include_router(orgs.router, prefix="/organizations", tags=["Organizations"])
 app.include_router(xero.router, prefix="/api", tags=["Xero Integration"])
+app.include_router(htmx_views.router)
+app.include_router(duilius.router)
