@@ -33,6 +33,9 @@ class Settings(BaseSettings):
     XERO_CLIENT_SECRET: str = os.getenv('XERO_CLIENT_SECRET', '')
     XERO_REDIRECT_URI: str = os.getenv('XERO_REDIRECT_URI', '')  # Añadido esta línea
 
+    #Secret Key - OpenAI API
+    inventario_demo_key:str = os.getenv('inventario_demo_key', '')
+
     ADMIN_EMAILS: List[str] = [
         "duilio@dataextractor.cloud"
         # Aquí puedes agregar más emails de administradores

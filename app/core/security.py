@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 import jwt
 from fastapi import HTTPException, Security
@@ -14,23 +14,25 @@ class SecurityManager:
     def create_access_token(cls, user_id: int, tenant_ids: list[str]) -> str:
         """Create JWT access token."""
         payload = {
-            'exp': datetime.utcnow() + timedelta(days=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
-            'iat': datetime.utcnow(),
+            'exp': datetime.now(timezone.utc) + timedelta(days=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
+            'iat': datetime.now(timezone.utc),
             'sub': str(user_id),
             'tenant_ids': tenant_ids
         }
         return jwt.encode(payload, cls.secret_key, algorithm=cls.algorithm)
 
     @classmethod
-    def decode_token(cls, token: str) -> dict:
-        """Decode JWT token."""
+    def decode_token(self, token: str):
         try:
-            payload = jwt.decode(token, cls.secret_key, algorithms=[cls.algorithm])
-            if datetime.fromtimestamp(payload['exp']) < datetime.utcnow():
-                raise HTTPException(status_code=401, detail="Token has expired")
+            print("Starting token decode...")
+            payload = jwt.decode(token, self.secret_key, algorithms=["HS256"])
+            print("Decoded payload:", payload)
+            if not isinstance(payload.get('sub'), str):
+                raise ValueError("Subject must be a string")
             return payload
-        except jwt.InvalidTokenError:
-            raise HTTPException(status_code=401, detail="Invalid token")
+        except Exception as e:
+            print("Token decode error:", str(e))
+            raise
 
     @classmethod
     async def get_current_user(cls, credentials: HTTPAuthorizationCredentials = Security(security)) -> dict:
