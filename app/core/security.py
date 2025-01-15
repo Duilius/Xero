@@ -25,7 +25,7 @@ class SecurityManager:
     @classmethod
     def decode_token(self, token: str):
         try:
-            print("Starting token decode...")
+            print("Starting token decode con PyJWT...")
             payload = pyjwt.decode(token, self.secret_key, algorithms=["HS256"])
             print("Decoded payload:", payload)
             if not isinstance(payload.get('sub'), str):
