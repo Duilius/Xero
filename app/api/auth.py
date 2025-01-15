@@ -12,11 +12,16 @@ from app.services.xero_data_service import get_chart_of_accounts
 from app.models.xero_token import XeroToken
 from datetime import datetime, timezone
 from app.utils.date_utils import format_local_datetime
+from app.core.middlewares import get_current_user_id
+from app.models.organization import Organization, OrganizationUser
+from app.services.xero_client import XeroClient
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
+xero_client = XeroClient()  # Instancia del cliente
+
 
 # Add custom filters
 def format_number(value):
@@ -57,40 +62,20 @@ async def connect_xero(response: Response):
     return response
 
 @router.get("/callback")
-async def oauth_callback(
-    request: Request,
-    code: str,
-    db: Session = Depends(get_db)
-):
-    try:
-        print(f"Received callback with code: {code}")  # Debug
-        auth_result = await xero_auth_service.handle_oauth_callback(db, code)
-        print(f"Auth result: {auth_result}")  # Debug
-        
-        # Log para debugging (opcional)
-        print("Auth result:", auth_result)
-        
-        response = RedirectResponse(url="/auth/dashboard")
-        response.set_cookie(
-            key="session",
-            value=auth_result["token"],
-            httponly=True,
-            secure=True,
-            max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-            samesite="lax"
-        )
-        
-        return response
-        
-    except Exception as e:
-        print(f"Detailed error in callback: {str(e)}")  # Debug
-        print(f"Exception type: {type(e)}")  # Debug
-        import traceback
-        print(f"Traceback: {traceback.format_exc()}")  # Debug
-        raise HTTPException(
-            status_code=400,
-            detail=f"OAuth callback error: {str(e)}"
-        )
+async def oauth_callback(request: Request, code: str, db: Session = Depends(get_db)):
+    auth_result = await xero_auth_service.handle_oauth_callback(db, code)
+    response = RedirectResponse(url="/auth/dashboard")
+    
+    response.set_cookie(
+        key="session",
+        value=auth_result["token"],
+        httponly=False,
+        secure=False,
+        path="/",
+        max_age=60 * 60
+    )
+    
+    return response
 
 @router.get("/dashboard")
 async def dashboard(request: Request, db: Session = Depends(get_db)):
@@ -99,35 +84,51 @@ async def dashboard(request: Request, db: Session = Depends(get_db)):
     
     user_data = session_data["session_data"]["user_info"]
     organizations = session_data["session_data"]["organizations"]["connections"]
-    last_sync = organizations[0]["last_sync"] if organizations else "Never"
-
-    # Obtener token de la BD para la primera organización
-    token = db.query(XeroToken).filter(
-        XeroToken.tenant_id == organizations[0]["tenant_id"]
-    ).first()
-
-     # Asegurarnos que token_expires_at tenga timezone
-    token_expiry = token.token_expires_at
-    if token_expiry.tzinfo is None:
-        token_expiry = token_expiry.replace(tzinfo=timezone.utc)
-
-    if datetime.now(timezone.utc) >= token_expiry:
-        print("Token expired, refreshing...")
-        new_token = await xero_oauth_service.refresh_access_token(
-            db=db,
-            refresh_token=token.refresh_token
-        )
-        access_token = new_token["access_token"]
-    else:
-        access_token = token.access_token
-
-    # Obtener chart of accounts con el token actualizado
-    accounts = await get_chart_of_accounts(
-        tenant_id=organizations[0]["tenant_id"], 
-        access_token=access_token
-    )
-
-    print("Accounts response:", accounts)  # Debug
+    
+    # Obtener préstamos para cada organización
+    loans_data = []
+    total_amount = 0
+    for org in organizations:
+        token = db.query(XeroToken).filter(
+            XeroToken.tenant_id == org["tenant_id"]
+        ).first()
+        if token:
+            # Obtener datos de la cuenta de préstamos
+            accounts = await get_chart_of_accounts(
+                tenant_id=org["tenant_id"], 
+                access_token=token.access_token
+            )
+            if accounts and "Reports" in accounts:
+                report = accounts["Reports"][0]
+                for row in report.get("Rows", []):
+                    if (row.get("RowType") == "Section" and 
+                        row.get("Title", "").lower() == "non-current liabilities"):
+                        
+                        # Procesar las filas de esta sección
+                        for subrow in row.get("Rows", []):
+                            # Buscar filas que contengan 'Loan' en el título
+                            if (subrow.get("RowType") == "Row" and 
+                                "Loan" in subrow.get("Cells", [])[0].get("Value", "")):
+                                
+                                cells = subrow.get("Cells", [])
+                                if len(cells) >= 2:
+                                    try:
+                                        # El Value de la segunda celda contiene el balance
+                                        balance = float(cells[1].get("Value", "0").replace(",", ""))
+                                        loan_name = cells[0].get("Value", "")
+                                        
+                                        if balance != 0:
+                                            loans_data.append({
+                                                "from_org": org["name"],
+                                                "to_org": loan_name.replace("Loan to ", "").replace("Loan-1 to ", ""),
+                                                "amount": abs(balance),  # Valor absoluto
+                                                "status": "active" if balance < 0 else "pending",  # Negativo significa préstamo otorgado
+                                                "date": report.get("ReportDate"),
+                                                "from_org_id": org["tenant_id"]
+                                            })
+                                            total_amount += abs(balance)
+                                    except (ValueError, TypeError) as e:
+                                        print(f"Error processing balance for {loan_name}: {e}")
 
     context = {
         "request": request,
@@ -135,20 +136,18 @@ async def dashboard(request: Request, db: Session = Depends(get_db)):
             "name": user_data["name"],
             "email": user_data["email"]
         },
-        "last_sync": format_local_datetime(organizations[0]["last_sync"]),
-        "last_sync": last_sync,
+        "last_sync": organizations[0]["last_sync"] if organizations else "Never",
         "stats": {
             "org_count": len(organizations),
-            "loan_count": 0,  # Por implementar
-            "total_amount": 0  # Por implementar
+            "loan_count": len(loans_data),
+            "total_amount": total_amount
         },
-        "recent_loans": [],  # Por implementar
-        "alerts": [],  # Por implementar
+        "recent_loans": loans_data[:5],  # Mostrar solo los 5 más recientes
         "organizations": [
             {"id": org["tenant_id"], "name": org["name"]}
             for org in organizations
         ],
-        "current_org_id": organizations[0]["tenant_id"] if organizations else None
+        "current_org_id": None  # Se actualizará cuando se seleccione una org
     }
     
     return templates.TemplateResponse("dashboard/index.html", context)
