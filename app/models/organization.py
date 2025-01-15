@@ -25,9 +25,11 @@ class Organization(Base, TimestampMixin):
     status = Column(Enum(OrganizationStatus), default=OrganizationStatus.ACTIVE)
     subscription_type = Column(Enum(SubscriptionType), default=SubscriptionType.TRIAL)
     subscription_ends_at = Column(DateTime, nullable=True)
-    # Removemos business_group_id ya que no existe la tabla
+
+    # Agregar solo esta relación:
+    authorizers = relationship("Authorizer", back_populates="organization")
     
-    # Relaciones
+    # Mantener las relaciones existentes:
     users = relationship("OrganizationUser", back_populates="organization")
     tokens = relationship("XeroToken", back_populates="organization")
 
