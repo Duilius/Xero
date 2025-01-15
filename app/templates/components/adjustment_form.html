@@ -1,0 +1,72 @@
+<!--  template para el formulario de ajuste ### template para el formulario de ajuste #### template para el formulario de ajuste -->
+<div class="border-t mt-4 pt-4">
+    <h3 class="font-semibold mb-4">Request Adjustment Authorization</h3>
+    
+    <form hx-post="/adjustments/submit-request"
+          hx-swap="outerHTML"
+          class="space-y-4">
+        
+        <!-- Empresa donde se hará el ajuste -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+                Adjustment in Company
+            </label>
+            <select name="adjust_in_org_id" 
+                    class="w-full border rounded-md py-2 px-3"
+                    required>
+                <option value="{{ org_1.id }}">{{ org_1.name }}</option>
+                <option value="{{ org_2.id }}">{{ org_2.name }}</option>
+            </select>
+        </div>
+
+        <!-- Justificación -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+                Justification
+            </label>
+            <textarea 
+                name="justification"
+                class="w-full border rounded-md py-2 px-3 h-32"
+                placeholder="Explain why this adjustment is needed..."
+                required
+                minlength="10"></textarea>
+        </div>
+
+        <!-- Selección de autorizadores -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+                Select Authorizers
+            </label>
+            <div class="border rounded-lg divide-y">
+                {% for auth in authorizers %}
+                <div class="flex items-start p-4 hover:bg-gray-50">
+                    <input
+                        type="checkbox"
+                        name="authorizer_ids"
+                        value="{{ auth.id }}"
+                        id="auth-{{ auth.id }}"
+                        class="mt-1">
+                    <label for="auth-{{ auth.id }}" class="ml-3 cursor-pointer">
+                        <div class="font-medium">{{ auth.name }}</div>
+                        <div class="text-sm text-gray-500">{{ auth.role }}</div>
+                        <div class="text-sm text-gray-500">{{ auth.email }}</div>
+                    </label>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="flex justify-end gap-4 pt-4">
+            <button type="button" 
+                    class="px-4 py-2 text-gray-600 hover:text-gray-800"
+                    _="on click trigger closeModal">
+                Cancel
+            </button>
+            <button type="submit" 
+                    class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+                Submit Request
+            </button>
+        </div>
+    </form>
+</div>

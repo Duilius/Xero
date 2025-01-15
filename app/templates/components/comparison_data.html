@@ -1,0 +1,35 @@
+<div class="grid grid-cols-3 gap-4">
+    <!-- Total Transactions -->
+    <div class="bg-gray-50 p-4 rounded-lg">
+        <h3 class="text-sm font-medium text-gray-500">Total Transactions</h3>
+        <div class="mt-2 flex justify-between">
+            <!-- Un solo valor para cada organización -->
+            <span class="text-xl font-bold">{{ org_1.transaction_count }}</span>
+        <!--
+            <span class="text-xl font-bold {% if org_2.transaction_count != org_1.transaction_count %}text-red-600{% endif %}">
+                {{ org_2.transaction_count }}
+            </span>
+        -->
+        </div>
+    </div>
+
+    <!-- Total Amount -->
+    <div class="bg-gray-50 p-4 rounded-lg">
+        <h3 class="text-sm font-medium text-gray-500">Total Amount</h3>
+        <div class="mt-2 flex justify-between">
+            <!-- Un solo valor para cada organización -->
+            <span class="text-xl font-bold">${{ "{:,.2f}".format(org_1.amount) }}</span>
+            <!--
+            <span class="text-xl font-bold {% if org_2.amount != org_1.amount %}text-red-600{% endif %}">
+                ${{ "{:,.2f}".format(org_2.amount) }}
+            </span>
+            -->
+        </div>
+    </div>
+
+    <!-- Discrepancy -->
+    <div class="bg-gray-50 p-4 rounded-lg">
+        <h3 class="text-sm font-medium text-gray-500">Discrepancy</h3>
+        <p class="mt-2 text-xl font-bold text-red-600">${{ "{:,.2f}".format(discrepancy) }}</p>
+    </div>
+</div>

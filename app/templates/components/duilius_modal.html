@@ -1,0 +1,32 @@
+<!-- Duilius Chatbot Modal -->
+<!-- 
+Incluye:
+
+Botón flotante con el avatar de Duilius para abrir el modal.
+Interfaz del modal con ventana de chat e input para mensajes.
+-->
+<div id="duiliusModal" class="duilius-modal hidden">
+    <div class="duilius-modal-content">
+        <span class="duilius-close-btn" onclick="closeDuiliusModal()">&times;</span>
+        <!-- Header con avatar y nombre corregido -->
+        <div class="duilius-header">
+            <img src="/static/img/duilius_avatar.webp" alt="Duilius Avatar" class="duilius-avatar">
+            <h2>Duilius - Smart Assistant</h2>
+            <!-- Bocadillo de diálogo de Duilius -->
+            {% include 'components/duilius_speech.html' %}
+        </div>
+
+        <div id="duiliusChatWindow" class="duilius-chat-window">
+            <div id="duiliusMessages" class="duilius-messages"></div>
+        </div>
+        <div class="duilius-input-container">
+            <input type="text" id="duiliusUserInput" placeholder="Type your question here..." onkeydown="if(event.key === 'Enter') sendDuiliusMessage()">
+            <button onclick="sendDuiliusMessage()">Send</button>
+        </div>
+    </div>
+</div>
+
+<!-- Duilius Chatbot Button -->
+<button id="duiliusChatButton" class="duilius-chat-button" onclick="openDuiliusModal()">
+    <img src="/static/img/duilius-avatar-7.webp" alt="Chat with Duilius">
+</button>
