@@ -1,6 +1,6 @@
 import requests, base64
 from sqlalchemy.orm import Session
-from app.db.models.models_xero import RefreshToken
+from app.models.models_xero import RefreshToken
 
 
 def refresh_access_token(db, tenant_id, client_id, client_secret):

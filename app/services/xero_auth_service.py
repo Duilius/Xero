@@ -25,7 +25,6 @@ class XeroAuthService:
         self.secret_key = settings.SECRET_KEY
 
     async def handle_oauth_callback(self, db: Session, code: str) -> Dict:
-        """Handle the OAuth callback process comprehensively."""
         try:
             # Exchange code for tokens
             token_data = await xero_oauth_service.exchange_code_for_tokens(code)
@@ -33,10 +32,12 @@ class XeroAuthService:
 
             # Get user info from Xero
             user_info = await self._get_user_info(access_token)
+            print("User info from Xero:", user_info)  # Debug
             
             # Create or update user
             user = await self._create_or_update_user(db, user_info)
-            
+            print("User after create/update:", user.id)  # Debug
+
             # Get Xero tenant connections
             tenant_connections = await self._get_tenant_connections(access_token)
             
@@ -45,10 +46,10 @@ class XeroAuthService:
                 db, user.id, tenant_connections, token_data
             )
 
-            # Preparar datos de sesión mejorados
+            # Crear token con datos mejorados
             session_data = {
                 "user_info": {
-                    "id": user.id,
+                    "id": str(user.id),  # Convertir a string
                     "name": f"{user.first_name} {user.last_name}",
                     "email": user.email
                 },
@@ -66,24 +67,30 @@ class XeroAuthService:
                 }
             }
 
-            # Create session token con datos mejorados
+            print("About to create session token with:", {
+                "user_id": user.id,
+                "tenant_ids": tenant_ids,
+                "session_data": session_data
+            })  # Debug
+
             session_token = self._create_session_token(
-                user.id, 
+                str(user.id),  # Convertir explícitamente a string
                 tenant_ids,
-                session_data  # Pasar los datos adicionales
+                session_data
             )
 
             return {
-                "token": session_token,  # Cambiado de "access_token" a "token"
+                "token": session_token,
                 "user": {
-                    "id": user.id,
+                    "id": str(user.id),  # Convertir a string
                     "email": user.email,
                     "name": f"{user.first_name} {user.last_name}"
                 },
-                "organizations": session_data["organizations"]  # Incluir organizaciones en la respuesta
+                "organizations": session_data["organizations"]
             }
 
         except Exception as e:
+            print("Error in handle_oauth_callback:", str(e))  # Debug
             raise HTTPException(
                 status_code=400,
                 detail=f"OAuth callback failed: {str(e)}"
@@ -326,27 +333,28 @@ class XeroAuthService:
         
         db.commit()
 
-    def _create_session_token(
-        self, 
-        user_id: int, 
-        tenant_ids: List[str], 
-        session_data: Dict
-    ) -> str:
-        """Create a session token with enhanced data."""
-        payload = {
-            "user_id": user_id,
-            "tenant_ids": tenant_ids,
-            "session_data": session_data,
-            "exp": datetime.now(timezone.utc) + timedelta(
-                minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
+    def _create_session_token(self, user_id: str, tenant_ids: List[str], session_data: Dict = None) -> str:
+        """Create a session token with enhanced session data."""
+        try:
+            if not isinstance(user_id, str):
+                user_id = str(user_id)
+                
+            payload = {
+                "sub": user_id,
+                "tenant_ids": tenant_ids,
+                "session_data": session_data
+            }
+            
+            print("Creating token with payload:", payload)  # Debug
+            
+            return jwt.encode(
+                payload,
+                self.secret_key,
+                algorithm="HS256"
             )
-        }
-        
-        return jwt.encode(
-            payload,
-            self.secret_key,
-            algorithm="HS256"
-        )
+        except Exception as e:
+            print("Error creating session token:", str(e))
+            raise
 
     def decode_session_token(self, token: str) -> Dict:
         """Decode and validate a session token."""
