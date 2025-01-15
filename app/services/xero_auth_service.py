@@ -3,7 +3,7 @@ from typing import Dict, List, Optional
 import httpx
 import json
 from datetime import datetime, timedelta, timezone
-#import jwt as pyjwt
+import jwt as pyjwt
 from jose import jwt
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
@@ -359,7 +359,7 @@ class XeroAuthService:
     def decode_session_token(self, token: str) -> Dict:
         """Decode and validate a session token."""
         try:
-            payload = jwt.decode(
+            payload = pyjwt.decode(
                 token,
                 self.secret_key,
                 algorithms=["HS256"]
