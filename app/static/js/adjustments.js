@@ -44,12 +44,11 @@ window.compareOrganizations = function() {
     const url = `/adjustments/compare/${selectedOrgId}`;
     console.log('Attempting request with cookies:', document.cookie);  // Debug
     console.log('Attempting to request:', url);
+    console.log('All cookies at compare:', document.cookie.split(';').map(c => c.trim()));
 
      // Verificar todas las cookies
      console.log('All cookies:', document.cookie);
 
-      // Verificar todas las cookies
-    console.log('All cookies:', document.cookie);
     
     // Verificación más detallada
     if (!document.cookie) {
@@ -59,7 +58,7 @@ window.compareOrganizations = function() {
     }
     
      // Si no hay cookie de sesión, redirigir al login
-     if (!document.cookie.includes('session=')) {
+     if (!document.cookie.includes('session_xero=')) {
          console.error('Session cookie not found - current cookies:', document.cookie);
          console.error('No session cookie found');
          //window.location.href = '/auth/login';
