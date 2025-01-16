@@ -12,7 +12,7 @@ async def get_chart_of_accounts(tenant_id: str, access_token: str) -> Optional[D
                     "Accept": "application/json"
                 }
             )
-            print(f"Balance Sheet response: {response.text}")
+            #print(f"Balance Sheet response: {response.text}")
             return response.json() if response.status_code == 200 else None
     except Exception as e:
         print(f"Error in get_chart_of_accounts: {str(e)}")

@@ -3,8 +3,8 @@ from typing import Dict, List, Optional
 import httpx
 import json
 from datetime import datetime, timedelta, timezone
-import jwt as pyjwt
-from jose import jwt
+from jwt import PyJWT
+from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 
@@ -20,9 +20,11 @@ from app.core.security import security_manager
 
 class XeroAuthService:
     def __init__(self):
-        self.userinfo_url = "https://identity.xero.com/connect/userinfo"
-        self.connections_url = "https://api.xero.com/connections"
-        self.secret_key = settings.SECRET_KEY
+       self.jwt = PyJWT()
+       self.userinfo_url = "https://identity.xero.com/connect/userinfo"
+       self.connections_url = "https://api.xero.com/connections" 
+       self.secret_key = settings.SECRET_KEY
+
 
     async def handle_oauth_callback(self, db: Session, code: str) -> Dict:
         try:
@@ -47,7 +49,7 @@ class XeroAuthService:
             )
 
             # Crear token con datos mejorados
-            session_data = {
+            session_xero = {
                 "user_info": {
                     "id": str(user.id),  # Convertir a string
                     "name": f"{user.first_name} {user.last_name}",
@@ -70,13 +72,13 @@ class XeroAuthService:
             print("About to create session token with:", {
                 "user_id": user.id,
                 "tenant_ids": tenant_ids,
-                "session_data": session_data
+                "session_xero": session_xero
             })  # Debug
 
             session_token = self._create_session_token(
                 str(user.id),  # Convertir explícitamente a string
                 tenant_ids,
-                session_data
+                session_xero
             )
 
             return {
@@ -86,7 +88,7 @@ class XeroAuthService:
                     "email": user.email,
                     "name": f"{user.first_name} {user.last_name}"
                 },
-                "organizations": session_data["organizations"]
+                "organizations": session_xero["organizations"]
             }
 
         except Exception as e:
@@ -333,48 +335,47 @@ class XeroAuthService:
         
         db.commit()
 
-    def _create_session_token(self, user_id: str, tenant_ids: List[str], session_data: Dict = None) -> str:
-        """Create a session token with enhanced session data."""
-        try:
-            if not isinstance(user_id, str):
-                user_id = str(user_id)
-                
-            payload = {
-                "sub": user_id,
-                "tenant_ids": tenant_ids,
-                "session_data": session_data
-            }
-            
-            print("Creating token with payload:", payload)  # Debug
-            
-            return jwt.encode(
-                payload,
-                self.secret_key,
-                algorithm="HS256"
-            )
-        except Exception as e:
-            print("Error creating session token:", str(e))
-            raise
-
+    def _create_session_token(self, user_id: str, tenant_ids: List[str], session_xero: Dict = None) -> str:
+       """Create a session token with enhanced session data."""
+       try:
+           if not isinstance(user_id, str):
+               user_id = str(user_id)
+               
+           payload = {
+               "sub": user_id,
+               "tenant_ids": tenant_ids,
+               "session_xero": session_xero
+           }
+           
+           print("Creating token with payload:", payload)
+           
+           return self.jwt.encode(
+               payload,
+               self.secret_key,
+               algorithm="HS256"
+           )
+       except Exception as e:
+           print("Error creating session token:", str(e))
+           raise
+    
     def decode_session_token(self, token: str) -> Dict:
-        """Decode and validate a session token."""
-        try:
-            payload = pyjwt.decode(
-                token,
-                self.secret_key,
-                algorithms=["HS256"]
-            )
-            return payload
-        except jwt.ExpiredSignatureError:
-            raise HTTPException(
-                status_code=401,
-                detail="Token has expired"
-            )
-        except jwt.InvalidTokenError:
-            raise HTTPException(
-                status_code=401,
-                detail="Invalid token"
-            )
+       try:
+           payload = self.jwt.decode(
+               token,
+               self.secret_key,
+               algorithms=["HS256"]
+           )
+           return payload
+       except ExpiredSignatureError:
+           raise HTTPException(
+               status_code=401,
+               detail="Token has expired"
+           )
+       except InvalidTokenError:
+           raise HTTPException(
+               status_code=401,
+               detail="Invalid token"
+           )
         
     async def process_auth_data(
         self,
