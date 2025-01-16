@@ -18,7 +18,7 @@ class AuthMiddleware:
             return await call_next(request)
             
         # Protected paths
-        session_token = request.cookies.get("session")
+        session_token = request.cookies.get("session_xero")
         if not session_token:
             return RedirectResponse(url="/auth/login")
             
