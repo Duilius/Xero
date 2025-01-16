@@ -69,8 +69,8 @@ async def oauth_callback(request: Request, code: str, db: Session = Depends(get_
     response.set_cookie(
         key="session",
         value=auth_result["token"],
-        httponly=False,
-        secure=False,
+        httponly=True,
+        secure=True,
         path="/",
         max_age=60 * 60
     )
