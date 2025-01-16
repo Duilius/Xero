@@ -29,6 +29,7 @@ class User(Base, TimestampMixin):
     email_verified = Column(Boolean, default=False)
     email_verified_at = Column(DateTime, nullable=True)
     last_login_at = Column(DateTime, nullable=True)
+    updated_at = Column(DateTime, nullable=True)
     xero_roles = Column(JSON, nullable=True)
 
     # Solo las relaciones que realmente necesitas
