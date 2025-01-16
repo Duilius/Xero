@@ -15,7 +15,7 @@ from app.utils.date_utils import format_local_datetime
 from app.core.middlewares import get_current_user_id
 from app.models.organization import Organization, OrganizationUser
 from app.services.xero_client import XeroClient
-
+#usamos Python Jose y JWT
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
