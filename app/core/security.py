@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 from typing import Optional
-import jwt as pyjwt
+import jwt as noJose
 from jose import jwt
 from fastapi import HTTPException, Security
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -26,7 +26,7 @@ class SecurityManager:
     def decode_token(self, token: str):
         try:
             print("Starting token decode con PyJWT... JOSE")
-            payload = pyjwt.decode(token, self.secret_key, algorithms=["HS256"])
+            payload = noJose.decode(token, self.secret_key, algorithms=["HS256"])
             print("Decoded payload:", payload)
             if not isinstance(payload.get('sub'), str):
                 raise ValueError("Subject must be a string")
