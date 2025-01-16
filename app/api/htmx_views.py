@@ -43,7 +43,7 @@ async def get_comparison_data(
         print(f"Comparing data for org_id: {org_id}")
         
         # Obtener token de sesión para acceder a los tenant_ids
-        session_token = request.cookies.get("session")
+        session_token = request.cookies.get("session_xero")
         payload = xero_auth_service.decode_session_token(session_token)
         
         # Obtener las organizaciones del payload

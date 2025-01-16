@@ -15,7 +15,7 @@ from app.utils.date_utils import format_local_datetime
 from app.core.middlewares import get_current_user_id
 from app.models.organization import Organization, OrganizationUser
 from app.services.xero_client import XeroClient
-#usamos Python Jose y JWT
+
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
@@ -63,27 +63,29 @@ async def connect_xero(response: Response):
 
 @router.get("/callback")
 async def oauth_callback(request: Request, code: str, db: Session = Depends(get_db)):
-    auth_result = await xero_auth_service.handle_oauth_callback(db, code)
-    response = RedirectResponse(url="/auth/dashboard")
-    
-    response.set_cookie(
-        key="session",
-        value=auth_result["token"],
-        httponly=True,
-        secure=True,
-        path="/",
-        max_age=60 * 60
-    )
-    
-    return response
+   auth_result = await xero_auth_service.handle_oauth_callback(db, code)
+   print("Token to be set in cookie:", auth_result["token"][:20] + "...")
+   response = RedirectResponse(url="/auth/dashboard")
+   
+   response.set_cookie(
+       key="session_xero",
+       value=auth_result["token"],
+       httponly=False,  # Temporalmente false para debug
+       secure=False,    # Temporalmente false para debug
+       path="/",
+       max_age=60 * 60
+   )
+   
+   print("Cookie set. Response headers:", response.headers)
+   return response
 
 @router.get("/dashboard")
 async def dashboard(request: Request, db: Session = Depends(get_db)):
-    session_token = request.cookies.get("session")
-    session_data = xero_auth_service.decode_session_token(session_token)
+    session_token = request.cookies.get("session_xero")
+    session_xero = xero_auth_service.decode_session_token(session_token)
     
-    user_data = session_data["session_data"]["user_info"]
-    organizations = session_data["session_data"]["organizations"]["connections"]
+    user_data = session_xero["session_xero"]["user_info"]
+    organizations = session_xero["session_xero"]["organizations"]["connections"]
     
     # Obtener préstamos para cada organización
     loans_data = []
@@ -167,7 +169,7 @@ async def logout(
 @router.get("/check-auth")
 async def check_auth(request: Request):
     """Check if user is authenticated."""
-    session = request.cookies.get("session")
+    session = request.cookies.get("session_xero")
     return {"authenticated": bool(session)}
 
 @router.post("/refresh-token")
@@ -178,7 +180,7 @@ async def refresh_token(
     """Refresh Xero access token."""
     try:
         # Get current token from session
-        session_token = request.cookies.get("session")
+        session_token = request.cookies.get("session_xero")
         if not session_token:
             raise HTTPException(status_code=401, detail="No session found")
 
@@ -194,7 +196,7 @@ async def refresh_token(
         # Create response with new token
         response = Response()
         response.set_cookie(
-            key="session",
+            key="session_xero",
             value=new_token,
             httponly=True,
             secure=True,
