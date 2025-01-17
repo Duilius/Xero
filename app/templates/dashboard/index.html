@@ -81,8 +81,13 @@
                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                     {% for loan in recent_loans %}
                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
-    onclick="openAdjustmentModal('{{ loan.from_org }}', '{{ loan.from_org_id }}')"
->
+                    onclick="openAdjustmentModal(
+                        '{{ loan.from_org }}', 
+                        '{{ loan.from_org_id }}',
+                        '{{ loan.to_org }}',
+                        '{{ loan.to_org_id }}',
+                        {{ loan.amount }}
+                    )">
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                             {{ loan.from_org }}
                         </td>
@@ -158,7 +163,13 @@
     <div class="bg-white rounded-lg shadow-lg w-full max-w-4xl">
         <!-- Modal Header -->
         <div class="p-6 border-b flex justify-between items-center bg-gray-50">
-            <h2 class="text-xl font-semibold">Reconciliation: <span id="org-name"></span></h2>
+            <div>
+                <h2 class="text-xl font-semibold">Loan Reconciliation</h2>
+                <p class="text-sm text-gray-600">
+                    <span class="font-medium">Lender:</span> <span id="lender-name"></span> →
+                    <span class="font-medium">Borrower:</span> <span id="borrower-name"></span>
+                </p>
+            </div>
             <button 
                 onclick="document.getElementById('adjustment-modal').classList.add('hidden')" 
                 class="text-gray-400 hover:text-gray-600"
@@ -171,40 +182,19 @@
         
         <!-- Modal Content -->
         <div class="p-6">
-            <!-- Selector de Empresa -->
-            <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Select Company to Compare With
-                </label>
-                <!-- En el modal -->
-                <select id="compare-company" class="w-full border rounded-md py-2 px-3">
-                    {% for org in organizations %}
-                        {% if org.id != current_org_id %}  <!-- No mostrar la org ya seleccionada -->
-                            <option value="{{ org.id }}">{{ org.name }}</option>
-                        {% endif %}
-                    {% endfor %}
-                </select>
+            <!-- Loan Details -->
+            <div id="loan-details" class="space-y-6">
+                <!-- Populated via JavaScript -->
+            </div>
+            
+            <!-- Payment History -->
+            <div id="payment-history" class="mt-6">
+                <!-- Populated via JavaScript -->
             </div>
 
-            <!-- Área de Comparación -->
-            <div id="comparison-area" class="space-y-4">
-                <!-- Los datos se cargarán aquí -->
-            </div>
-
-            <!-- Botones de Acción -->
-            <div class="mt-6 flex justify-end space-x-3">
-                <button 
-                    onclick="document.getElementById('adjustment-modal').classList.add('hidden')"
-                    class="px-4 py-2 border rounded text-gray-600 hover:bg-gray-50"
-                >
-                    Cancel
-                </button>
-                <button 
-                    onclick="compareOrganizations()"
-                    class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                >
-                    Compare
-                </button>
+            <!-- Authorization Form -->
+            <div id="authorization-form" class="mt-6 hidden">
+                <!-- Will be populated when needed -->
             </div>
         </div>
     </div>
@@ -215,52 +205,24 @@
 <script src="{{ url_for('static', path='js/adjustments.js') }}"></script>
 
 <script>
-    // Verificar que HTMX esté disponible
-    if (typeof htmx === 'undefined') {
-        console.error('HTMX not loaded');
-    } else {
-        console.log('HTMX available');
-    }
-
-     // Definir la función de comparación globalmente
-/*
-     window.compareOrganizations = function() {
-        const selectedOrgId = document.getElementById('compare-company').value;
-        console.log('Comparing organizations with ID:', selectedOrgId);
-
-        htmx.ajax('GET', `/compare/${selectedOrgId}`, {
-            target: '#comparison-area',
-            swap: 'innerHTML'
-        });
-    }
-*/
-    console.log('Script cargado');
-
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('Script ejecutándose');
         const timeElements = document.getElementsByClassName('timestamp');
         
-        console.log('Elementos encontrados:', timeElements?.length);
-        
-        if (timeElements && timeElements.length > 0) {
+        if (timeElements?.length > 0) {
             Array.from(timeElements).forEach(element => {
                 const utcTime = element.getAttribute('data-utc');
-                console.log('UTC time:', utcTime);
                 if (utcTime) {
                     element.textContent = new Date(utcTime).toLocaleString(navigator.language, {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: true
-                });
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                    });
                 }
             });
-        } else {
-            console.log('No se encontraron elementos timestamp');
         }
     });
-
 </script>
 {% endblock %}

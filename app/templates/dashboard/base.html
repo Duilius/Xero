@@ -4,13 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Dashboard - CloudAudit Pro{% endblock %}</title>
-    
+
+        <!-- Enlace al archivo CSS -->
+        <link rel="stylesheet" href="../../static/css/duilius_modal.css">
+        <!-- Enlace al archivo JS -->
+        <script src="../../static/js/duilius_modal.js"></script>
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Alpine.js -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    
+
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -201,8 +206,7 @@
     
     {% block extra_scripts %}{% endblock %}
     {% include 'components/duilius_modal.html' %}
-<link rel="stylesheet" href="/static/css/duilius_modal.css">
-<script src="/static/js/duilius_modal.js"></script>
+
 
 </body>
 </html>
