@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Request, HTTPException, Response
+from fastapi import FastAPI, APIRouter, Depends, Request, HTTPException, Response
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from app.db.session import get_db
@@ -15,12 +15,18 @@ from app.utils.date_utils import format_local_datetime
 from app.core.middlewares import get_current_user_id
 from app.models.organization import Organization, OrganizationUser
 from app.services.xero_client import XeroClient
+from fastapi.staticfiles import StaticFiles
+
+app = FastAPI()
+# Static files
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 xero_client = XeroClient()  # Instancia del cliente
+
 
 
 # Add custom filters
@@ -119,14 +125,21 @@ async def dashboard(request: Request, db: Session = Depends(get_db)):
                                         balance = float(cells[1].get("Value", "0").replace(",", ""))
                                         loan_name = cells[0].get("Value", "")
                                         
-                                        if balance != 0:
+                                        if balance < 0:
                                             loans_data.append({
                                                 "from_org": org["name"],
                                                 "to_org": loan_name.replace("Loan to ", "").replace("Loan-1 to ", ""),
-                                                "amount": abs(balance),  # Valor absoluto
-                                                "status": "active" if balance < 0 else "pending",  # Negativo significa préstamo otorgado
+                                                "amount": abs(balance),
+                                                "status": "active" if balance < 0 else "pending",
                                                 "date": report.get("ReportDate"),
-                                                "from_org_id": org["tenant_id"]
+                                                "from_org_id": org["tenant_id"],
+                                                # Agregar to_org_id buscando en organizations
+                                                "to_org_id": next(
+                                                    (org["tenant_id"] 
+                                                    for org in organizations 
+                                                    if org["name"] in loan_name),
+                                                    None
+                                                )
                                             })
                                             total_amount += abs(balance)
                                     except (ValueError, TypeError) as e:
