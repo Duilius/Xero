@@ -1,25 +1,10 @@
-<!--  template para el formulario de ajuste ### template para el formulario de ajuste #### template para el formulario de ajuste -->
-<div class="border-t mt-4 pt-4">
+<div id="authorization-form" class="border-t mt-4 pt-4">
     <h3 class="font-semibold mb-4">Request Adjustment Authorization</h3>
     
     <form hx-post="/adjustments/submit-request"
           hx-swap="outerHTML"
           class="space-y-4">
         
-        <!-- Empresa donde se hará el ajuste -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-                Adjustment in Company
-            </label>
-            <select name="adjust_in_org_id" 
-                    class="w-full border rounded-md py-2 px-3"
-                    required>
-                <option value="{{ org_1.id }}">{{ org_1.name }}</option>
-                <option value="{{ org_2.id }}">{{ org_2.name }}</option>
-            </select>
-        </div>
-
-        <!-- Justificación -->
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
                 Justification
@@ -32,7 +17,7 @@
                 minlength="10"></textarea>
         </div>
 
-        <!-- Selección de autorizadores -->
+        <!-- Authorizers Section -->
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
                 Select Authorizers
@@ -56,11 +41,11 @@
             </div>
         </div>
 
-        <!-- Botones -->
+        <!-- Action Buttons -->
         <div class="flex justify-end gap-4 pt-4">
             <button type="button" 
                     class="px-4 py-2 text-gray-600 hover:text-gray-800"
-                    _="on click trigger closeModal">
+                    onclick="hideAuthorizationForm()">
                 Cancel
             </button>
             <button type="submit" 

@@ -5,28 +5,41 @@ Incluye:
 Botón flotante con el avatar de Duilius para abrir el modal.
 Interfaz del modal con ventana de chat e input para mensajes.
 -->
+<!-- Modal Vertical Mejorado -->
+<!-- Modal Vertical Mejorado -->
+<!-- Enlace al archivo CSS -->
+
 <div id="duiliusModal" class="duilius-modal hidden">
     <div class="duilius-modal-content">
         <span class="duilius-close-btn" onclick="closeDuiliusModal()">&times;</span>
-        <!-- Header con avatar y nombre corregido -->
+
+        <!-- Encabezado con Avatar -->
         <div class="duilius-header">
-            <img src="/static/img/duilius_avatar.webp" alt="Duilius Avatar" class="duilius-avatar">
+            <img src="/static/img/duilio-foto-avatar.webp" alt="Duilius Avatar" class="duilius-avatar">
             <h2>Duilius - Smart Assistant</h2>
-            <!-- Bocadillo de diálogo de Duilius -->
-            {% include 'components/duilius_speech.html' %}
         </div>
 
+        <!-- Opciones Iniciales -->
+        <div class="duilius-options">
+            <button onclick="duiliusSpeak('Mostrando Preguntas Frecuentes')">📖 Ver Preguntas Frecuentes</button>
+            <button onclick="duiliusSpeak('Mostrando Servicios Ofrecidos')">🛠️ Ver Servicios Ofrecidos</button>
+            <button onclick="duiliusSpeak('Mostrando Planes Disponibles')">💼 Ver Planes</button>
+        </div>
+
+        <!-- Chat Window -->
         <div id="duiliusChatWindow" class="duilius-chat-window">
             <div id="duiliusMessages" class="duilius-messages"></div>
         </div>
+
+        <!-- Input -->
         <div class="duilius-input-container">
-            <input type="text" id="duiliusUserInput" placeholder="Type your question here..." onkeydown="if(event.key === 'Enter') sendDuiliusMessage()">
-            <button onclick="sendDuiliusMessage()">Send</button>
+            <input type="text" id="duiliusUserInput" placeholder="Escribe tu mensaje..." onkeydown="if(event.key === 'Enter') sendDuiliusMessage()">
+            <button onclick="sendDuiliusMessage()">Enviar</button>
         </div>
     </div>
 </div>
 
-<!-- Duilius Chatbot Button -->
+<!-- Botón para abrir el Chatbot -->
 <button id="duiliusChatButton" class="duilius-chat-button" onclick="openDuiliusModal()">
-    <img src="/static/img/duilius-avatar-7.webp" alt="Chat with Duilius">
+    <img src="/static/img/duilio-foto-avatar.webp" alt="Chat with Duilius">
 </button>
