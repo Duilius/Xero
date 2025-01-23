@@ -80,3 +80,46 @@ function duiliusSpeak(message) {
 
 // Prueba inicial
 duiliusSpeak("¡Hola! ¿En qué puedo ayudarte hoy?");
+
+function sendPredefinedQuestion(questionId) {
+    let message;
+    switch (questionId) {
+        case 1:
+            message = "You selected: View FAQs.";
+            break;
+        case 2:
+            message = "You selected: View Offered Services.";
+            break;
+        case 3:
+            message = "You selected: View Plans.";
+            break;
+        default:
+            message = "Unknown selection.";
+    }
+    addChatbotMessage(message, "bot");
+}
+
+
+function sendMessage() {
+    const input = document.getElementById("user-input");
+    const message = input.value.trim();
+    if (message) {
+        addChatbotMessage(message, "user");
+        input.value = "";
+
+        // Simulate bot response
+        setTimeout(() => {
+            addChatbotMessage("I'm still learning to assist with your queries.", "bot");
+        }, 1000);
+    }
+}
+
+
+function addChatbotMessage(message, sender) {
+    const messagesDiv = document.getElementById("duilius-messages");
+    const messageDiv = document.createElement("div");
+    messageDiv.className = sender === "user" ? "duilius-user-message" : "duilius-bot-message";
+    messageDiv.textContent = message;
+    messagesDiv.appendChild(messageDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
