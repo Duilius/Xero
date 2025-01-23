@@ -1,0 +1,280 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Dashboard - CloudAudit Pro{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Page Header -->
+    <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+        <div class="flex items-center space-x-4">
+            <button 
+                hx-get="/api/sync"
+                hx-target="#sync-status"
+                class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+                Sync with Xero
+            </button>
+            <span id="sync-status" class="text-sm text-gray-500 dark:text-gray-400 timestamp" data-utc="{{ last_sync }}">Last synced:{{ last_sync }}</span>
+        </div>
+    </div>
+    <!--nuevo -->
+    <!-- Tabs Navigation -->
+    <div class="border-b border-gray-200 dark:border-gray-700">
+        <nav class="flex -mb-px">
+            <button 
+                class="tab-button active-tab px-6 py-3 font-medium text-primary-600 border-b-2 border-primary-600 dark:text-white"
+                id="loans-tab"
+                data-view="loans">
+                Loan Management
+            </button>
+            <button 
+                class="tab-button px-6 py-3 font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent dark:text-gray-400"
+                id="relationships-tab"
+                data-view="relationships">
+                Business Relationships
+            </button>
+        </nav>
+    </div>
+
+    <div id="loans-view">
+    <!-- Stats Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Connected Organizations -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">Connected Organizations</h3>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                    Active
+                </span>
+            </div>
+            <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-white">{{ stats.org_count }}</p>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Organizations connected through Xero</p>
+        </div>
+
+        <!-- Total Loans -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">Active Loans</h3>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                    This Month
+                </span>
+            </div>
+            <p class="mt-2 text-3xl font-bold text-gray-900 dark:text-white">{{ stats.loan_count }}</p>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Active intercompany loans</p>
+        </div>
+
+        <!-- Total Amount -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">Total Amount</h3>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                    Outstanding
+                </span>
+            </div>
+            <div class="mt-2 text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white break-words">
+                ${{ "{:,.2f}".format(stats.total_amount) }}
+            </div>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Total intercompany loans</p>
+        </div>
+    </div>
+
+    <!-- Recent Loans -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Recent Loans</h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="bg-gray-50 dark:bg-gray-700">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">From</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">To</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Amount</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    {% for loan in recent_loans %}
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
+                    onclick="openAdjustmentModal(
+                        '{{ loan.from_org }}', 
+                        '{{ loan.from_org_id }}',
+                        '{{ loan.to_org }}',
+                        '{{ loan.to_org_id }}',
+                        {{ loan.amount }}
+                    )">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                            {{ loan.from_org }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                            {{ loan.to_org }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900 dark:text-white">
+                            ${{ "{:,.2f}".format(loan.amount) }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                {% if loan.status == 'active' %}
+                                    bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                                {% elif loan.status == 'pending' %}
+                                    bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
+                                {% else %}
+                                    bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200
+                                {% endif %}
+                            ">
+                                {{ loan.status|title }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                            {{ loan.date }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Alerts and Notifications -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Alerts & Notifications</h3>
+        </div>
+        <div class="divide-y divide-gray-200 dark:divide-gray-700">
+            {% for alert in alerts %}
+            <div class="px-6 py-4">
+                <div class="flex items-center space-x-3">
+                    <div class="flex-shrink-0">
+                        {% if alert.type == 'warning' %}
+                        <svg class="h-5 w-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                        {% elif alert.type == 'error' %}
+                        <svg class="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        {% else %}
+                        <svg class="h-5 w-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        {% endif %}
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ alert.title }}</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ alert.message }}</p>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <span class="text-xs text-gray-500 dark:text-gray-400">{{ alert.time }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Agregar contenedor para la vista de relaciones -->
+<div id="relationships-view" class="hidden space-y-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+        <div class="p-6">
+            <div class="max-w-2xl">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Search Organization
+                </label>
+                <div class="relative">
+                    <input 
+                        type="text" 
+                        id="org-search"
+                        class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        placeholder="Type organization name..."
+                    >
+                    <div id="search-results" 
+                         class="absolute w-full mt-1 bg-white dark:bg-gray-700 shadow-lg rounded-lg hidden">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Panel de relaciones -->
+    <div id="relationships-panel" class="bg-white dark:bg-gray-800 rounded-lg shadow hidden">
+        <!-- Se poblará vía JavaScript -->
+    </div>
+</div>
+
+
+<!-- Modal para ajustes -->
+<div id="adjustment-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-4xl">
+        <!-- Modal Header -->
+        <div class="p-6 border-b flex justify-between items-center bg-gray-50">
+            <div>
+                <h2 class="text-xl font-semibold">Loan Reconciliation</h2>
+                <p class="text-sm text-gray-600">
+                    <span class="font-medium">Lender:</span> <span id="lender-name"></span> →
+                    <span class="font-medium">Borrower:</span> <span id="borrower-name"></span>
+                </p>
+            </div>
+            <button 
+                onclick="document.getElementById('adjustment-modal').classList.add('hidden')" 
+                class="text-gray-400 hover:text-gray-600"
+            >
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Modal Content -->
+        <div class="p-6">
+            <!-- Loan Details -->
+            <div id="loan-details" class="space-y-6">
+                <!-- Populated via JavaScript -->
+            </div>
+            
+            <!-- Payment History -->
+            <div id="payment-history" class="mt-6">
+                <!-- Populated via JavaScript -->
+            </div>
+
+            <!-- Authorization Form -->
+            <div id="authorization-form" class="mt-6 hidden">
+                <!-- Will be populated when needed -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', path='js/adjustments.js') }}"></script>
+<script src="{{ url_for('static', path='js/relationships.js') }}"></script>
+<!-- resto del script existente -->
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const timeElements = document.getElementsByClassName('timestamp');
+        
+        if (timeElements?.length > 0) {
+            Array.from(timeElements).forEach(element => {
+                const utcTime = element.getAttribute('data-utc');
+                if (utcTime) {
+                    element.textContent = new Date(utcTime).toLocaleString(navigator.language, {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                    });
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
