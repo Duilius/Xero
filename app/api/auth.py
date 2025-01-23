@@ -16,6 +16,7 @@ from app.core.middlewares import get_current_user_id
 from app.models.organization import Organization, OrganizationUser
 from app.services.xero_client import XeroClient
 from fastapi.staticfiles import StaticFiles
+from app.models.organization import Organization, OrganizationUser
 
 app = FastAPI()
 # Static files
@@ -91,81 +92,67 @@ async def dashboard(request: Request, db: Session = Depends(get_db)):
     session_xero = xero_auth_service.decode_session_token(session_token)
     
     user_data = session_xero["session_xero"]["user_info"]
-    organizations = session_xero["session_xero"]["organizations"]["connections"]
     
-    # Obtener préstamos para cada organización
-    loans_data = []
-    total_amount = 0
-    for org in organizations:
-        token = db.query(XeroToken).filter(
-            XeroToken.tenant_id == org["tenant_id"]
-        ).first()
-        if token:
-            # Obtener datos de la cuenta de préstamos
-            accounts = await get_chart_of_accounts(
-                tenant_id=org["tenant_id"], 
-                access_token=token.access_token
-            )
-            if accounts and "Reports" in accounts:
-                report = accounts["Reports"][0]
-                for row in report.get("Rows", []):
-                    if (row.get("RowType") == "Section" and 
-                        row.get("Title", "").lower() == "non-current liabilities"):
-                        
-                        # Procesar las filas de esta sección
-                        for subrow in row.get("Rows", []):
-                            # Buscar filas que contengan 'Loan' en el título
-                            if (subrow.get("RowType") == "Row" and 
-                                "Loan" in subrow.get("Cells", [])[0].get("Value", "")):
-                                
-                                cells = subrow.get("Cells", [])
-                                if len(cells) >= 2:
-                                    try:
-                                        # El Value de la segunda celda contiene el balance
-                                        balance = float(cells[1].get("Value", "0").replace(",", ""))
-                                        loan_name = cells[0].get("Value", "")
-                                        
-                                        if balance < 0:
-                                            loans_data.append({
-                                                "from_org": org["name"],
-                                                "to_org": loan_name.replace("Loan to ", "").replace("Loan-1 to ", ""),
-                                                "amount": abs(balance),
-                                                "status": "active" if balance < 0 else "pending",
-                                                "date": report.get("ReportDate"),
-                                                "from_org_id": org["tenant_id"],
-                                                # Agregar to_org_id buscando en organizations
-                                                "to_org_id": next(
-                                                    (org["tenant_id"] 
-                                                    for org in organizations 
-                                                    if org["name"] in loan_name),
-                                                    None
-                                                )
-                                            })
-                                            total_amount += abs(balance)
-                                    except (ValueError, TypeError) as e:
-                                        print(f"Error processing balance for {loan_name}: {e}")
+    # Obtener tenant_ids de la sesión actual
+    tenant_ids = [
+        org["tenant_id"] 
+        for org in session_xero["session_xero"]["organizations"]["connections"]
+    ]
 
+    print(f"DEBUG - Tenant IDs from session: {tenant_ids}")
+    
+    # Obtener organizaciones con nombres reales
+    org_data = (
+        db.query(Organization, XeroToken)
+        .join(OrganizationUser, Organization.id == OrganizationUser.organization_id)
+        .join(XeroToken, Organization.id == XeroToken.organization_id)
+        .filter(
+            OrganizationUser.user_id == user_data["id"],
+            XeroToken.tenant_id.in_(tenant_ids)
+        )
+        .all()
+    )
+
+    print(f"DEBUG - Organizations found: {[(org.name, token.tenant_id) for org, token in org_data]}")
+    
+    # Crear lista de organizaciones con nombres correctos
+    orgs_data = [
+        {
+            "tenant_id": token.tenant_id,
+            "name": org.name,  # Usar el nombre real de la organización
+            "last_sync": token.last_sync_at.isoformat() if token.last_sync_at else None
+        }
+        for org, token in org_data
+    ]
+
+    print(f"DEBUG - Final orgs_data: {orgs_data}")
+    
+    # Actualizar la sesión con los nombres correctos
+    new_session = {**session_xero}
+    new_session["session_xero"]["organizations"] = {
+        "connections": orgs_data
+    }
+    new_session_token = xero_auth_service.encode_session_token(new_session)
+    
     context = {
         "request": request,
         "user": {
             "name": user_data["name"],
             "email": user_data["email"]
         },
-        "last_sync": organizations[0]["last_sync"] if organizations else "Never",
-        "stats": {
-            "org_count": len(organizations),
-            "loan_count": len(loans_data),
-            "total_amount": total_amount
-        },
-        "recent_loans": loans_data[:5],  # Mostrar solo los 5 más recientes
-        "organizations": [
-            {"id": org["tenant_id"], "name": org["name"]}
-            for org in organizations
-        ],
-        "current_org_id": None  # Se actualizará cuando se seleccione una org
+        "organizations": orgs_data,
+        "balance": {
+            "assets": {"nonCurrent": [], "current": []},
+            "liabilities": {"nonCurrent": [], "current": []},
+            "equity": []
+        }
     }
     
-    return templates.TemplateResponse("dashboard/index.html", context)
+    # Crear respuesta con la sesión actualizada
+    response = templates.TemplateResponse("dashboard/index-20Ene.html", context)
+    response.set_cookie("session_xero", new_session_token)
+    
+    return response
 
 @router.post("/logout")
 async def logout(
