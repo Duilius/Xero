@@ -1,0 +1,56 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+#customer-locations, #experience, #testimonials, footer {
+    padding: 20px;
+    margin: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.location, .initiative, .testimonial {
+    margin-bottom: 20px;
+}
+
+.location span {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.initiatives {
+    display: flex;
+    justify-content: space-between;
+}
+
+.initiative {
+    flex: 1;
+    margin: 0 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+footer {
+    text-align: center;
+}

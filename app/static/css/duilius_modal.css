@@ -2,18 +2,13 @@
 
 /* Modal Vertical Mejorado */
 .duilius-modal {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 400px;  /* Más angosto */
-    height: 600px; /* Más alto */
-    background-color: #ffffff;
-    border-radius: 15px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    overflow: hidden;
-    z-index: 1000;
+    width: 400px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
+    font-family: Arial, sans-serif;
 }
 
 /* Hidden by Default */
@@ -36,23 +31,35 @@
 /* Header with Avatar */
 /* Encabezado */
 /* Encabezado */
-.duilius-header {
-    background-color: #13B5EA;
-    padding: 15px;
+/* Header */
+.duilius-modal-header {
     display: flex;
     align-items: center;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
+    justify-content: space-between;
+    background: #007BFF;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px 8px 0 0;
 }
 
 .duilius-avatar {
-    width: 45px;
-    margin-right: 10px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
 }
 
 
 /* Chat Window */
+/* Chat Area */
+.duilius-chat {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+
 .duilius-chat-window {
     flex-grow: 1;
     padding: 10px;
@@ -60,13 +67,39 @@
     background-color: #f9f9f9;
 }
 
-.duilius-messages {
+#duilius-messages {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
 /* Input Area */
+.duilius-input {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+}
+
+.duilius-input input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.duilius-input button {
+    background: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+.duilius-input button:hover {
+    background: #0056b3;
+}
+
 .duilius-input-container {
     display: flex;
     padding: 10px;
@@ -116,6 +149,14 @@
 }
 
 /* Botón de Cierre */
+.duilius-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
 .duilius-close-btn {
     position: absolute;
     top: 10px;
@@ -123,6 +164,29 @@
     font-size: 22px;
     cursor: pointer;
     color: #ffffff;
+}
+
+/* Predefined Questions */
+.duilius-predefined {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.duilius-btn {
+    background: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: left;
+}
+
+.duilius-btn:hover {
+    background: #0056b3;
 }
 
 .duilius-close-btn:hover {
@@ -181,6 +245,23 @@
 }
 
 /* Mensaje del Usuario */
+.duilius-user-message {
+    align-self: flex-end;
+    background: #007BFF;
+    color: white;
+    padding: 10px;
+    border-radius: 10px 0 10px 10px;
+    max-width: 70%;
+}
+
+.duilius-bot-message {
+    align-self: flex-start;
+    background: #f1f1f1;
+    padding: 10px;
+    border-radius: 0 10px 10px 10px;
+    max-width: 70%;
+}
+
 .user-message {
     align-self: flex-end;
     background-color: #d1e7dd;  /* Verde suave */
