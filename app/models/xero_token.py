@@ -13,6 +13,8 @@ class XeroToken(Base, TimestampMixin):
     access_token = Column(Text, nullable=True)
     refresh_token = Column(Text, nullable=False)
     token_expires_at = Column(DateTime, nullable=False)
+    updated_at = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, nullable=False)
     last_sync_at = Column(DateTime, nullable=True)
 
     # Relación

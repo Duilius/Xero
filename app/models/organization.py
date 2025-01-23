@@ -25,6 +25,8 @@ class Organization(Base, TimestampMixin):
     status = Column(Enum(OrganizationStatus), default=OrganizationStatus.ACTIVE)
     subscription_type = Column(Enum(SubscriptionType), default=SubscriptionType.TRIAL)
     subscription_ends_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, nullable=True)
+    updated_at = Column(DateTime, nullable=True)
 
     # Agregar solo esta relación:
     authorizers = relationship("Authorizer", back_populates="organization")
