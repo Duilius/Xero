@@ -6,7 +6,7 @@ from datetime import datetime, timedelta, timezone
 from jwt import PyJWT
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 from sqlalchemy.orm import Session
-from fastapi import HTTPException
+from fastapi import HTTPException, Depends
 
 from app.core.config import settings
 from app.models.user import User, UserRole, UserStatus
@@ -16,7 +16,8 @@ from app.models.xero_token import XeroToken
 from app.services.xero_oauth_service import xero_oauth_service
 
 from app.core.security import security_manager
-
+from sqlalchemy.orm import Session
+from app.db.session import get_db
 
 class XeroAuthService:
     def __init__(self):
@@ -335,28 +336,29 @@ class XeroAuthService:
         
         db.commit()
 
-    def _create_session_token(self, user_id: str, tenant_ids: List[str], session_xero: Dict = None) -> str:
-       """Create a session token with enhanced session data."""
-       try:
-           if not isinstance(user_id, str):
-               user_id = str(user_id)
-               
-           payload = {
-               "sub": user_id,
-               "tenant_ids": tenant_ids,
-               "session_xero": session_xero
-           }
-           
-           print("Creating token with payload:", payload)
-           
-           return self.jwt.encode(
-               payload,
-               self.secret_key,
-               algorithm="HS256"
-           )
-       except Exception as e:
-           print("Error creating session token:", str(e))
-           raise
+    def _create_session_token(self, user_id: str, tenant_ids: List[str], session_xero: Dict) -> str:
+        """Create a session token with enhanced session data and expiration."""
+        try:
+            if not isinstance(user_id, str):
+                user_id = str(user_id)
+                
+            expires_at = datetime.now(timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+            
+            payload = {
+                "sub": user_id,
+                "tenant_ids": tenant_ids,
+                "session_xero": session_xero,
+                "exp": expires_at.timestamp()  # Añadir expiración
+            }
+            
+            return self.jwt.encode(
+                payload,
+                self.secret_key,
+                algorithm="HS256"
+            )
+        except Exception as e:
+            print("Error creating session token:", str(e))
+            raise
     
     def decode_session_token(self, token: str) -> Dict:
        try:
@@ -376,7 +378,22 @@ class XeroAuthService:
                status_code=401,
                detail="Invalid token"
            )
-        
+
+    def encode_session_token(self, data: Dict) -> str:
+        """Encode data into a JWT token."""
+        try:
+            token = self.jwt.encode(
+                data,
+                self.secret_key,
+                algorithm="HS256"
+            )
+            return token
+        except Exception as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Error encoding token: {str(e)}"
+            )
+
     async def process_auth_data(
         self,
         db: Session,
@@ -423,5 +440,41 @@ class XeroAuthService:
                 detail=f"Error processing auth data: {str(e)}"
             )
         
+
+# app/services/xero_auth_service.py
+
+# En xero_auth_service.py
+async def refresh_access_token(self, tenant_id: str, db: Session) -> str:
+    """Refresh token automático con manejo de errores"""
+    try:
+        token = db.query(XeroToken).filter(
+            XeroToken.tenant_id == tenant_id
+        ).first()
+        
+        if not token:
+            raise HTTPException(status_code=401, detail="No token found")
+            
+        # Renovar token antes de que expire (5 minutos antes)
+        if token.token_expires_at > datetime.now(timezone.utc) + timedelta(minutes=5):
+            return token.access_token
+            
+        new_token_data = await self._refresh_token(token.refresh_token)
+        
+        # Actualizar token
+        token.access_token = new_token_data["access_token"]
+        token.refresh_token = new_token_data.get("refresh_token", token.refresh_token)
+        token.token_expires_at = datetime.now(timezone.utc) + timedelta(
+            seconds=new_token_data.get("expires_in", 1800)
+        )
+        token.updated_at = datetime.now(timezone.utc)
+        
+        db.commit()
+        return token.access_token
+    except Exception as e:
+        # Si falla el refresh, redirigir a reconexión con Xero
+        raise HTTPException(
+            status_code=401,
+            detail="Session expired. Please reconnect with Xero."
+        )
 
 xero_auth_service = XeroAuthService()
