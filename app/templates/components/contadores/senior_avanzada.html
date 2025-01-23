@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Landing</title>
+    <!--<link rel="stylesheet" href="{{ url_for('static', path='/css/senior_avanzada.css') }}"></link>-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #111827;
+            color: #fff;
+        }
+        .navbar-fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: #111827;
+            z-index: 1000;
+        }
+        .hero-section {
+            background: linear-gradient(to bottom, #111827, #1F2937);
+        }
+        .stats {
+            display: flex;
+            gap: 4rem;
+            margin: 2rem 0;
+        }
+        .stats-item {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .testimonial-card {
+            background-color: rgba(31, 41, 55, 0.8);
+            border-radius: 1rem;
+            backdrop-filter: blur(8px);
+        }
+        .testimonial-icon {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .feature-card {
+            background: rgba(31, 41, 55, 0.8);
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar-fixed py-4 px-6 border-b border-gray-800">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-3xl">Lesly H.</h1>
+            <div class="flex items-center space-x-8">
+                <a href="#" class="text-gray-300 hover:text-white">Deposit</a>
+                <a href="#" class="text-gray-300 hover:text-white">Dashboard</a>
+                <a href="#" class="text-gray-300 hover:text-white">Company</a>
+                <a href="#" class="text-gray-300 hover:text-white">Pricing</a>
+                <button class="bg-gray-800 text-white px-6 py-2 rounded-lg">Open your account</button>
+                <button class="bg-yellow-400 text-black px-4 py-2 rounded-lg flex items-center">
+                    Sign in <span class="ml-2">→</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-6">
+        <div class="flex items-center justify-between py-20">
+            <div class="w-1/2">
+                <h1 class="text-5xl font-bold mb-4">Responsible Banking Made Easier</h1>
+                <p class="text-gray-400 mb-6">Financial services that put OFF business, deposit tools and still do more value for customers to track all manage pages.</p>
+                <button class="bg-white text-black px-6 py-2 rounded-md">Get Started Now</button>
+                
+                <div class="stats">
+                    <div class="stats-item">
+                        <span>$ 500 M+</span>
+                        <p>Administrados</p>
+                    </div>
+                    <div class="stats-item">
+                        <span>3.3k</span>
+                        <p>Ajustes Bank</p>
+                    </div>
+                    <div class="stats-item">
+                        <span>1200+</span>
+                        <p>Balance</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="w-1/2">
+                <img src="/static/img/lesly_h.png" width="40%" alt="Professional" class="rounded-lg shadow-xl" style="text-align: right; margin-left: 150px; border-radius: 8px;">
+            </div>
+        </div>
+
+        <section class="py-20">
+            <h2 class="text-3xl font-bold mb-10">All the experience in the new application</h2>
+            <div class="grid grid-cols-1 gap-4">
+                <div class="feature-card p-6">
+                    <h3 class="text-xl mb-2">Mobile Banking</h3>
+                    <p class="text-gray-400">Simple mobile tools that help you get serve mobile banking works.</p>
+                </div>
+                <div class="feature-card p-6">
+                    <h3 class="text-xl mb-2">Secure Transactions</h3>
+                    <p class="text-gray-400">Process mobile transaction integration and personal data.</p>
+                </div>
+                <div class="feature-card p-6">
+                    <h3 class="text-xl mb-2">Digital Cards</h3>
+                    <p class="text-gray-400">Virtual and physical cards with advanced tracking features.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <section class="py-20">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-4">What My Former Managers and Colleagues Say</h2>
+            <p class="text-gray-400 text-center text-xl mb-12">Discover the impact and value I've brought to previous organizations through the words of those who know my work best</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="testimonial-card p-6">
+                    <div class="testimonial-icon">
+                        <svg width="24" height="24" class="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <p class="text-gray-300 italic mb-6">His attention to detail and ability to streamline complex accounting processes made her an invaluable asset to our firm. An exceptional professional who consistently exceeded expectations.</p>
+                    <div>
+                        <h4 class="font-bold">Robert Mitchell</h4>
+                        <p class="text-gray-400">Senior Partner, Mitchell & Associates</p>
+                    </div>
+                </div>
+
+                <div class="testimonial-card p-6">
+                    <div class="testimonial-icon">
+                        <svg width="24" height="24" class="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <p class="text-gray-300 italic mb-6">A natural leader who transformed our tax compliance department. His innovative approaches saved both time and resources while maintaining the highest standards.</p>
+                    <div>
+                        <h4 class="font-bold"> Jennifer Wong</h4>
+                        <p class="text-gray-400">CFO, Global Solutions Inc</p>
+                    </div>
+                </div>
+
+                <div class="testimonial-card p-6">
+                    <div class="testimonial-icon">
+                        <svg width="24" height="24" class="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <p class="text-gray-300 italic mb-6">Working alongside her was incredibly enriching. His willingness to share knowledge and mentor others elevated our entire team's performance.</p>
+                    <div>
+                        <h4 class="font-bold">Emma Davis</h4>
+                        <p class="text-gray-400">Financial Analyst</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="border-t border-gray-800 mt-20">
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-2xl mb-4">Lesly H</h3>
+                    <p class="text-gray-400 mb-6">Make the best decision since you first started banking.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white">TW</a>
+                        <a href="#" class="text-gray-400 hover:text-white">YT</a>
+                        <a href="#" class="text-gray-400 hover:text-white">IN</a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Product</h4>
+                    <div class="space-y-2 text-gray-400">
+                        <div><a href="#">Overview</a></div>
+                        <div><a href="#">Features</a></div>
+                        <div><a href="#">Solutions</a></div>
+                        <div><a href="#">Tutorials</a></div>
+                        <div><a href="#">Pricing</a></div>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Company</h4>
+                    <div class="space-y-2 text-gray-400">
+                        <div><a href="#">About us</a></div>
+                        <div><a href="#">Careers</a></div>
+                        <div><a href="#">Press</a></div>
+                        <div><a href="#">News</a></div>
+                        <div><a href="#">Blog</a></div>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Legal</h4>
+                    <div class="space-y-2 text-gray-400">
+                        <div><a href="#">Terms</a></div>
+                        <div><a href="#">Privacy</a></div>
+                        <div><a href="#">Cookies</a></div>
+                        <div><a href="#">Licenses</a></div>
+                        <div><a href="#">Contact</a></div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center text-gray-400 mt-12">
+                <p>© 2025 Lesly H. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

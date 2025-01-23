@@ -1,0 +1,57 @@
+<!-- Plantilla Pro (Intermedia) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/pro_intermedia.css') }}"></link>
+</head>
+<body>
+    <header class="header-pro">
+        <div class="profile-picture">
+            <img src="{{profile_picture}}" alt="Profile Picture">
+        </div>
+        <div class="user-info">
+            <h1>{{user_name}}</h1>
+            <p>{{user_title}}</p>
+        </div>
+    </header>
+
+    <main class="main-pro">
+        <section class="about">
+            <h2>About Me</h2>
+            <p>{{about_me}}</p>
+        </section>
+
+        <section class="services">
+            <h2>My Services</h2>
+            <ul>
+                <li>{{service_1}}</li>
+                <li>{{service_2}}</li>
+                <li>{{service_3}}</li>
+            </ul>
+        </section>
+
+        <section class="testimonials">
+            <h2>Client Testimonials</h2>
+            <blockquote>{{testimonial}}</blockquote>
+        </section>
+
+        <section class="contact">
+            <h2>Contact Me</h2>
+            <form action="/contact" method="POST">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" required></textarea>
+                <button type="submit">Send</button>
+            </form>
+        </section>
+    </main>
+
+    <footer class="footer-pro">
+        <p>&copy; {{current_year}} - Professional User</p>
+    </footer>
+</body>
+</html>
