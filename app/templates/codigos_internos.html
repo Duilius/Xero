@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Códigos</title>
+</head>
+
+<body>
+
+<div class="p-4">
+    <div class="mb-4">
+        <h2 class="text-xl font-bold">Comparación de Códigos Contables</h2>
+    </div>
+    
+    <div id="accountsTable" class="overflow-x-auto">
+        <table class="min-w-full bg-white">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="px-4 py-2">Organización</th>
+                    <th class="px-4 py-2">Cuenta</th>
+                    <th class="px-4 py-2">Código-Plan Cuenta</th>
+                    <th class="px-4 py-2">Nombre Cuenta</th>
+                    <th class="px-4 py-2">Código/ID Xero</th>
+                </tr>
+            </thead>
+            <tbody id="accountsBody">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+async function loadAccountComparison() {
+    try {
+        const response = await fetch('/api/codigos');
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            const tbody = document.querySelector('#accountsBody');
+            
+            Object.entries(data.data).forEach(([orgName, orgData]) => {
+                orgData.accounts.forEach(account => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="px-4 py-2">${orgName}</td>
+                        <td class="px-4 py-2">${account.Type}</td>
+                        <td class="px-4 py-2">${account.Code}</td>
+                        <td class="px-4 py-2">${account.Name}</td>
+                        <td class="px-4 py-2">${account.AccountID}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            });
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadAccountComparison);
+</script>
+
+</body>
+</html>
