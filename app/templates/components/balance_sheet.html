@@ -1,0 +1,130 @@
+{% if balance is defined %}
+<div class="grid grid-cols-2 gap-6">
+    <!-- Assets Column -->
+    <div class="flex flex-col h-full">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Assets</h2>
+        <div class="flex flex-col gap-4">
+            <!-- Non-Current Assets -->
+            <div class="flex-1 bg-white dark:bg-gray-800 rounded-lg shadow p-4 border border-blue-700/20">
+                <h3 class="text-lg font-medium mb-4 text-gray-700 dark:text-gray-300">Non-Current Assets</h3>
+                <div class="overflow-y-auto scrollbar-hide space-y-2" style="height: calc(100% - 2rem);">
+                    {% if balance.assets.nonCurrent %}
+                        {% for item in balance.assets.nonCurrent %}
+                        <div class="flex justify-between items-center p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded">
+                            <button class="text-blue-700 dark:text-blue-400 hover:underline">
+                                {{ item.org }}
+                            </button>
+                            <span class="{{ 'text-orange-700 dark:text-orange-400' if item.amount < 0 }}">
+                                {{ '({:,.2f})'.format(-item.amount) if item.amount < 0 else '{:,.2f}'.format(item.amount) }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="flex items-center justify-center h-full text-gray-400 dark:text-gray-500">
+                            No data available
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Current Assets -->
+            <div class="flex-1 bg-white dark:bg-gray-800 rounded-lg shadow p-4 border border-blue-700/20">
+                <h3 class="text-lg font-medium mb-4 text-gray-700 dark:text-gray-300">Current Assets</h3>
+                <div class="overflow-y-auto scrollbar-hide space-y-2" style="height: calc(100% - 2rem);">
+                    {% if balance.assets.current %}
+                        {% for item in balance.assets.current %}
+                        <div class="flex justify-between items-center p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded">
+                            <button class="text-blue-700 dark:text-blue-400 hover:underline">
+                                {{ item.org }}
+                            </button>
+                            <span class="{{ 'text-orange-700 dark:text-orange-400' if item.amount < 0 }}">
+                                {{ '({:,.2f})'.format(-item.amount) if item.amount < 0 else '{:,.2f}'.format(item.amount) }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="flex items-center justify-center h-full text-gray-400 dark:text-gray-500">
+                            No data available
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Liabilities Column -->
+    <div class="flex flex-col h-full">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Liabilities & Equity</h2>
+        <div class="flex flex-col gap-4">
+            <!-- Non-Current Liabilities -->
+            <div class="flex-1 bg-white dark:bg-gray-800 rounded-lg shadow p-4 border border-blue-700/20">
+                <h3 class="text-lg font-medium mb-4 text-gray-700 dark:text-gray-300">Non-Current Liabilities</h3>
+                <div class="overflow-y-auto scrollbar-hide space-y-2" style="height: calc(100% - 2rem);">
+                    {% if balance.liabilities.nonCurrent %}
+                        {% for item in balance.liabilities.nonCurrent %}
+                        <div class="flex justify-between items-center p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded">
+                            <button class="text-blue-700 dark:text-blue-400 hover:underline">
+                                {{ item.org }}
+                            </button>
+                            <span class="{{ 'text-orange-700 dark:text-orange-400' if item.amount < 0 }}">
+                                {{ '({:,.2f})'.format(-item.amount) if item.amount < 0 else '{:,.2f}'.format(item.amount) }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="flex items-center justify-center h-full text-gray-400 dark:text-gray-500">
+                            No data available
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Current Liabilities -->
+            <div class="flex-1 bg-white dark:bg-gray-800 rounded-lg shadow p-4 border border-blue-700/20">
+                <h3 class="text-lg font-medium mb-4 text-gray-700 dark:text-gray-300">Current Liabilities</h3>
+                <div class="overflow-y-auto scrollbar-hide space-y-2" style="height: calc(100% - 2rem);">
+                    {% if balance.liabilities.current %}
+                        {% for item in balance.liabilities.current %}
+                        <div class="flex justify-between items-center p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded">
+                            <button class="text-blue-700 dark:text-blue-400 hover:underline">
+                                {{ item.org }}
+                            </button>
+                            <span class="{{ 'text-orange-700 dark:text-orange-400' if item.amount < 0 }}">
+                                {{ '({:,.2f})'.format(-item.amount) if item.amount < 0 else '{:,.2f}'.format(item.amount) }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="flex items-center justify-center h-full text-gray-400 dark:text-gray-500">
+                            No data available
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Equity -->
+            <div class="flex-1 bg-white dark:bg-gray-800 rounded-lg shadow p-4 border border-blue-700/20">
+                <h3 class="text-lg font-medium mb-4 text-gray-700 dark:text-gray-300">Equity</h3>
+                <div class="overflow-y-auto scrollbar-hide space-y-2" style="height: calc(100% - 2rem);">
+                    {% if balance.equity %}
+                        {% for item in balance.equity %}
+                        <div class="flex justify-between items-center p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded">
+                            <button class="text-blue-700 dark:text-blue-400 hover:underline">
+                                {{ item.org }}
+                            </button>
+                            <span class="{{ 'text-orange-700 dark:text-orange-400' if item.amount < 0 }}">
+                                {{ '({:,.2f})'.format(-item.amount) if item.amount < 0 else '{:,.2f}'.format(item.amount) }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="flex items-center justify-center h-full text-gray-400 dark:text-gray-500">
+                            No data available
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
