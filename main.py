@@ -10,6 +10,9 @@ from app.core.template_filters import format_number
 from app.api import htmx_views
 from app.api import duilius  # Importa el router de Duilius
 from app.api import loans
+from app.api import balance  # Nuevo import
+from app import codigos_internos_xero
+
 #from app.core.middlewares import authenticate_user
 
 app = FastAPI(
@@ -52,6 +55,41 @@ async def home(request: Request):
         }
     )
 
+@app.get("/contadores/freemiun")
+async def freemiun(request: Request):
+    return templates.TemplateResponse(
+        "/components/contadores/freemiun_neutra.html",
+        {
+            "request": request,
+            "current_year": datetime.now().year
+        }
+    )
+
+@app.get("/contadores/pro")
+async def freemiun(request: Request):
+    return templates.TemplateResponse(
+        "/components/contadores/pro_intermedia.html",
+        {
+            "request": request,
+            "current_year": datetime.now().year
+        }
+    )
+
+@app.get("/contadores/senior")
+async def freemiun(request: Request):
+    return templates.TemplateResponse(
+        "/components/contadores/senior_avanzada.html",
+        {
+            "request": request,
+            "current_year": datetime.now().year
+        }
+    )
+
+@app.get("/compare")
+async def codigos_internos(request: Request):
+   return templates.TemplateResponse("codigos_internos.html", {"request": request})
+
+
 # Include routers
 app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
 app.include_router(users.router, prefix="/users", tags=["Users"])
@@ -60,3 +98,5 @@ app.include_router(xero.router, prefix="/api", tags=["Xero Integration"])
 app.include_router(htmx_views.router)
 app.include_router(duilius.router)
 app.include_router(loans.router,prefix="/api/loans", tags=["Loans"])
+app.include_router(balance.router, prefix="/api", tags=["Balance Sheet"])
+app.include_router(codigos_internos_xero.router, prefix="/api")
