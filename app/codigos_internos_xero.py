@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from app.models.organization import Organization, OrganizationUser
 from app.models.xero_token import XeroToken
+from app.models.user import User
 from app.db.session import get_db
 from app.services.xero_auth_service import XeroAuthService
 
@@ -49,13 +50,28 @@ async def compare_accounts(
     xero_auth_service: XeroAuthService = Depends(get_xero_auth_service)
 ):
     try:
+
         # Obtener user_id de la sesión
         session_token = request.cookies.get("session_xero")
         session_data = xero_auth_service.decode_session_token(session_token)
         user_id = session_data["session_xero"]["user_info"]["id"]
         
-        # Modificar la consulta para filtrar por usuario
+        # Obtener todas las organizaciones activas
         organizations = (
+            db.query(Organization, XeroToken)
+            .join(XeroToken, Organization.id == XeroToken.organization_id)
+            .join(OrganizationUser, Organization.id == OrganizationUser.organization_id)
+            .join(User, User.id == OrganizationUser.user_id)
+            .filter(
+                Organization.status == 'ACTIVE',
+                User.id == user_id
+            )
+            .all()
+        )
+        
+        
+        # Modificar la consulta para filtrar por usuario
+        """organizations = (
             db.query(Organization, XeroToken)
             .join(XeroToken)
             .join(OrganizationUser)
@@ -64,7 +80,7 @@ async def compare_accounts(
                 OrganizationUser.user_id == user_id  # Filtrar por usuario
             )
             .all()
-        )
+        )"""
         
         print(f"Organizations found for user {user_id}:", len(organizations))
         
