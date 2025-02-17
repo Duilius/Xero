@@ -243,12 +243,12 @@ async function showSyncDialog() {
     
     // Crear el diálogo modal con una tabla para mejor visualización
     const dialog = document.createElement('div');
-    dialog.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+    dialog.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 sync';
     dialog.innerHTML = `
         <div class="bg-white p-6 rounded-lg shadow-xl max-w-4xl w-full">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl font-bold">Select Organizations to Sync</h2>
-                <button onclick="closeDialog()" class="text-gray-500 hover:text-gray-700">
+                <button onclick="closeDialogSync()" class="text-gray-500 hover:text-gray-700">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -293,7 +293,7 @@ async function showSyncDialog() {
                 </table>
             </div>
             <div class="mt-4 flex justify-end space-x-3">
-                <button class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300" onclick="closeDialog()">Cancel</button>
+                <button class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300" onclick="closeDialogSync()">Cancel</button>
                 <button id="sync-button" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" onclick="syncSelected()">
                     Sync Selected
                 </button>
@@ -365,7 +365,7 @@ async function syncSelected() {
         console.error('Sync error:', error);
         alert('Error during synchronization');
     } finally {
-        //closeDialog(); /* Enviar a grabar en tablas y actualizar LocalSession */
+        //closeDialogSync(); /* Enviar a grabar en tablas y actualizar LocalSession */
         syncButton.innerHTML = 'Sync Selected';
     }
 }
@@ -394,8 +394,8 @@ async function syncOrganization(orgId) {
 }
 
 
-function closeDialog() {
-    const dialog = document.querySelector('.fixed');
+function closeDialogSync() {
+    const dialog = document.querySelector('.sync');
     if (dialog) {
         dialog.remove();
     }
