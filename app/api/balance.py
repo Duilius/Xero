@@ -5,8 +5,9 @@ from app.models.xero_token import XeroToken
 from app.services.xero_data_service import get_chart_of_accounts
 from typing import List, Dict
 import json
-from app.services.xero_auth_service import XeroAuthService
+from app.services.xero_auth_service import XeroAuthService, xero_auth_service
 from app.models.organization import Organization, OrganizationUser
+
 
 def get_xero_auth_service():
     return XeroAuthService()
@@ -43,14 +44,15 @@ async def list_organizations(
             .all()
         )
 
-        print(f"DEBUG - Organizations found: {[(org.name, token.tenant_id) for org, token in organizations]}")
+        print(f"DEBUG - Organizations found: {[(org.name, token.tenant_id, token.updated_at) for org, token in organizations]}")
 
         # Usar un diccionario para asegurar unicidad por tenant_id
         unique_orgs = {}
         for org, token in organizations:
             unique_orgs[token.tenant_id] = {
                 "id": token.tenant_id,
-                "name": org.name
+                "name": org.name,
+                "last_sync":token.updated_at
             }
 
         return {
@@ -61,29 +63,37 @@ async def list_organizations(
         print(f"ERROR in list_organizations: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/organizations/{org_id}/balance")
-async def get_organization_balance(
-    org_id: str,
-    db: Session = Depends(get_db)
-):
-    """Obtener balance sheet de una organización"""
+@router.get("/organizations/{tenant_id}")  # No incluir /api/ aquí porque ya está en el prefix
+async def get_organization_data(tenant_id: str, db: Session = Depends(get_db)):
     try:
-        token = db.query(XeroToken).filter(
-            XeroToken.tenant_id == org_id
-        ).first()
+        print(f"Loading organization data for tenant_id: {tenant_id}")
         
-        if not token:
-            raise HTTPException(status_code=404, detail="Organization not found")
-
-        balance_data = await get_chart_of_accounts(
-            tenant_id=org_id,
-            access_token=token.access_token
+        org_data = (
+            db.query(Organization, XeroToken)
+            .join(XeroToken)
+            .filter(XeroToken.tenant_id == tenant_id)
+            .first()
         )
-
-        # Procesar el balance para extraer relaciones
-        return process_balance_sheet(balance_data)
-
+        
+        if not org_data:
+            print(f"No data found for tenant_id: {tenant_id}")
+            raise HTTPException(status_code=404, detail="Organization not found")
+            
+        org, token = org_data
+        response_data = {
+            "status": "success",
+            "data": {
+                "id": tenant_id,
+                "name": org.name,
+                "status": org.status,
+                "last_sync": token.updated_at.isoformat() if token.updated_at else None
+            }
+        }
+        print(f"Returning data: {response_data}")  # Debug
+        return response_data
+        
     except Exception as e:
+        print(f"Error getting organization data: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 def process_balance_sheet(balance_data: Dict) -> Dict:
@@ -164,6 +174,11 @@ async def list_organizations(request: Request,db: Session = Depends(get_db)):
             for org in session_data["session_xero"]["organizations"]["connections"]
         ]
         
+        fechas = [
+            org["last_sync"] 
+            for org in session_data["session_xero"]["organizations"]["connections"]
+        ]
+        print(f"FECHAS 🙋‍♂️🙋‍♂️😀 - SYNC: {fechas}")
         print(f"DEBUG - Tenant IDs: {tenant_ids}")
         
         orgs = db.query(XeroToken).filter(

@@ -48,11 +48,12 @@ async def duilius_chat(request: Request):
     ai_response = response['choices'][0]['message']['content']
     return JSONResponse(content={"response": ai_response})"""
 
+""" CHATBOT CON OPEN-AI  ****************** CHATBOT CON OPEN-AI ***************  CHATBOT CON OPEN-AI ************ CHATBOT CON OPEN-AI **************  <<<===="""
 @router.post("/duilius-chat")
 async def duilius_chat(request: Request):
     data = await request.json()
     user_message = data.get("message")
-
+    print("MMMMM =========> " , user_message)
     # Consulta a OpenAI
     try:
         # Nueva forma de invocar la API de OpenAI
@@ -71,6 +72,8 @@ async def duilius_chat(request: Request):
 
     return JSONResponse(content={"response": ai_response})
 
+
+
 # Ruta para escalar consultas complejas a soporte humano
 @app.post("/duilius-escalate")
 async def escalate_to_support(request: Request):
@@ -88,3 +91,29 @@ async def escalate_to_support(request: Request):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)"""
+
+
+""" ************  ENVIA MENSAJE A OPENAI/DEEPSEAK CON DEEPSEEK """
+
+@router.post("/chatDeep")
+async def chatDeep(request: Request):
+    data = await request.json()
+    user_message = data.get("message")
+
+    # Consulta a OpenAI
+    try:
+        # Nueva forma de invocar la API de OpenAI
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "Eres Duilius, un asistente experto en atender a los empresarios que son clientes de un estudio contable, quienes te preguntarán acerca de sus operaciones comerciales como gastos, stock, ingresos, ventas, planillas, tributos y consultas o reporte de gestión. Responde de forma clara y profesional."},
+                {"role": "user", "content": user_message}
+            ],
+            max_tokens=150,
+            temperature=0.7
+        )
+        ai_response = response.choices[0].message.content.strip()
+    except Exception as e:
+        ai_response = f"Ocurrió un error: {e}"
+
+    return JSONResponse(content={"response": ai_response})
