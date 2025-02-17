@@ -1,0 +1,57 @@
+<!-- templates/accounts/cross_matrix.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Análisis Cruzado de Cuentas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div class="p-4">
+        <div class="flex gap-4 mb-4">
+            <!-- Selector de Cuenta -->
+            <div class="flex-1">
+                <label>Cuenta:</label>
+                <select id="accountSelect" class="w-full border p-2">
+                    <!-- Se llenará dinámicamente -->
+                </select>
+            </div>
+
+            <!-- Selector de Empresas -->
+            <div class="flex-1">
+                <label>Agregar Empresa:</label>
+                <select id="orgSelect" class="w-full border p-2">
+                    <!-- Se llenará dinámicamente -->
+                </select>
+            </div>
+        </div>
+
+        <!-- Filtro de Período -->
+        <div id="periodFilter" class="mb-4 flex gap-4">
+            <input type="date" id="fromDate" class="border p-2">
+            <input type="date" id="toDate" class="border p-2">
+            <button onclick="matrix.refresh()" class="bg-blue-500 text-white p-2 rounded">
+                Actualizar
+            </button>
+        </div>
+
+        <!-- Matriz de Saldos -->
+        <div class="overflow-auto">
+            <table id="crossMatrix" class="border-collapse border w-full">
+                <thead>
+                    <tr>
+                        <th class="border p-2">Empresa</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+                <tfoot>
+                    <tr>
+                        <td class="border p-2 font-bold">Totales</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <script src="/static/js/cross_matrix.js"></script>
+</body>
+</html>
