@@ -1,0 +1,16 @@
+/* Estilos directos en el archivo CSS */
+#quick-menu {
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 16rem; /* w-64 en Tailwind */
+    background-color: white; /* bg-white */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-lg */
+    transform: translateX(100%); /* translate-x-full */
+    transition: transform 0.3s ease-in-out; /* transition-transform */
+}
+
+#quick-menu.visible {
+    transform: translateX(0); /* translate-x-0 */
+}

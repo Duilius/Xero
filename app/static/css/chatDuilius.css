@@ -1,0 +1,164 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Modal del Chatbot */
+#chatbot-modal {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 350px;
+    height: 600px; /* Altura incrementada */
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    flex-direction: column;
+}
+
+/* Cabecera del Chatbot */
+#chatbot-header {
+    background: #007BFF;
+    color: white;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0; /* Evita que la cabecera se encoja */
+}
+
+#chatbot-header img {
+    border-radius: 50%;
+}
+
+#chatbot-header h2 {
+    margin: 0;
+    font-size: 16px;
+}
+
+/* Mensajes del Chatbot */
+#chatbot-messages {
+    flex-grow: 1; /* Ocupa el espacio disponible */
+    overflow-y: auto;
+    padding: 10px;
+    background: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.message {
+    max-width: 80%;
+    padding: 10px;
+    border-radius: 10px;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.message.bot {
+    background: #e1f5fe;
+    align-self: flex-start;
+}
+
+.message.user {
+    background: #007BFF;
+    color: white;
+    align-self: flex-end;
+}
+
+/* Input del Usuario */
+#chatbot-input-container {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    background: white;
+    border-top: 1px solid #ccc;
+    flex-shrink: 0;
+}
+
+#chatbot-input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#send-button {
+    padding: 10px 20px;
+    background: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+#send-button:hover {
+    background: #005bb5;
+}
+
+/* Pie de Página */
+/* Pie de Página */
+#chatbot-footer {
+    text-align: center;
+    padding: 10px;
+    /*background: #007BFF;*/ /* Fondo azul llamativo */
+    background: linear-gradient(90deg, #007BFF, #00BFFF);
+    border-top: 1px solid #ccc;
+    flex-shrink: 0; /* Fija el pie de página en la parte inferior */
+}
+
+#chatbot-footer a {
+    color: white; /* Texto blanco para contrastar */
+    text-decoration: none;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Espacio entre el ícono y el texto */
+    transition: all 0.3s ease; /* Transición suave */
+}
+
+#chatbot-footer a:hover {
+    color: #ffdd57; /* Cambia el color al pasar el mouse */
+    transform: scale(1.05); /* Efecto de escala */
+}
+
+#chatbot-footer a::after {
+    content: "→"; /* Ícono de flecha */
+    font-size: 18px;
+    transition: transform 0.3s ease; /* Animación de la flecha */
+}
+
+#chatbot-footer a:hover::after {
+    transform: translateX(5px); /* Mueve la flecha al pasar el mouse */
+}
+
+/* Botón para abrir el modal */
+#open-chatbot {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Animación de entrada */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

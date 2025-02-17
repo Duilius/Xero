@@ -1,0 +1,39 @@
+/* Estilos para el contenedor de resultados al BUSCAR CODIGOS DE CUENTA*/
+#account-results {
+    background-color: #ffffff; /* Fondo claro */
+    border: 1px solid #e5e7eb; /* Borde sutil */
+    border-radius: 0.5rem; /* Esquinas redondeadas */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Sombra */
+    max-height: 24rem; /* Altura máxima */
+    overflow-y: auto; /* Scroll vertical si es necesario */
+    margin-top: 0.5rem; /* Espacio arriba */
+}
+
+/* Estilos para los elementos individuales de los resultados */
+#account-results .result-item {
+    padding: 0.75rem 1rem; /* Espaciado interno */
+    border-bottom: 1px solid #e5e7eb; /* Borde entre elementos */
+    color: #374151; /* Color de texto */
+    transition: background-color 0.2s ease; /* Transición suave */
+}
+
+/* Efecto hover en los elementos */
+#account-results .result-item:hover {
+    background-color: #f3f4f6; /* Fondo al pasar el mouse */
+    cursor: pointer; /* Cambia el cursor */
+}
+
+/* Estilos para el modo oscuro */
+.dark #account-results {
+    background-color: #1f2937; /* Fondo oscuro */
+    border-color: #374151; /* Borde oscuro */
+}
+
+.dark #account-results .result-item {
+    color: #f3f4f6; /* Texto claro */
+    border-bottom-color: #374151; /* Borde oscuro */
+}
+
+.dark #account-results .result-item:hover {
+    background-color: #374151; /* Fondo oscuro al pasar el mouse */
+}

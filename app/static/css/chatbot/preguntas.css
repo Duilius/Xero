@@ -1,0 +1,13 @@
+.pregunta-sugerida {
+    display: block;
+    padding: 8px 12px;
+    margin: 5px 0;
+    background: #f1f1f1;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.pregunta-sugerida:hover {
+    background: #ddd;
+}

@@ -1,0 +1,96 @@
+.results-combinado {
+    margin: 20px;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table-header {
+    margin-bottom: 15px;
+}
+
+.table-header h2 {
+    color: #1e293b;
+    font-size: 1.25rem;
+    margin-bottom: 5px;
+}
+
+.combined-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background: white;
+}
+
+.combined-table th,
+.combined-table td {
+    border: 1px solid #e2e8f0;
+    padding: 12px;
+    text-align: left;
+}
+
+.combined-table th {
+    background-color: #f8fafc;
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.combined-table tr:hover > td {
+    background-color: #f1f5f9;
+}
+
+.combined-table td.empty-cell {
+    background-color: #f8fafc;
+    color: #94a3b8;
+    text-align: center;
+}
+
+.combined-table td.balance-cell {
+    text-align: right;
+}
+
+.balance-link {
+    text-decoration: none;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    color: inherit;
+}
+
+.balance-link:hover {
+    text-decoration: underline;
+}
+
+.combined-table .negative-balance {
+    color: #dc2626;
+}
+
+.combined-table .positive-balance {
+    color: #16a34a;
+}
+
+.account-code {
+    color: #64748b;
+    font-size: 0.875rem;
+}
+
+#processButton {
+    background-color: #2563eb;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right;
+    margin-top: 10px;
+}
+
+#processButton:hover {
+    background-color: #1d4ed8;
+}
+
+#processButton:disabled {
+    background-color: #94a3b8;
+    cursor: not-allowed;
+}

@@ -1,0 +1,136 @@
+body {
+    background-color: #18191a;
+}
+/* Contenedor principal */
+#chatbot-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 350px;
+    height: 500px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid #ccc;
+}
+
+/* Cabecera */
+#chatbot-header {
+    background: #0078D4;
+    color: white;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Botón de cierre */
+#chatbot-close {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+/* Cuerpo del chat */
+#chatbot-body {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    background: #f9f9f9;
+}
+
+/* Input */
+#chatbot-input {
+    display: flex;
+    padding: 10px;
+    background: white;
+    border-top: 1px solid #ddd;
+}
+
+#chatbot-text {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+#chatbot-send {
+    background: #0078D4;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    margin-left: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+
+#chat-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+#chat-input {
+    display: flex;
+    border-top: 1px solid #ccc;
+}
+
+#user-input {
+    flex-grow: 1;
+    padding: 10px;
+    border: none;
+    outline: none;
+}
+
+#send-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+#send-btn:hover {
+    background: #0056b3;
+}
+
+#menu-empresas {
+    position: fixed;
+    top: 10px;
+    right: 20px;
+    background: white;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+#sugerencias {
+    position: absolute;
+    bottom: 50px;
+    left: 10px;
+    width: 80%;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 5px;
+}
+
+.sugerencia-item {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
+
+.sugerencia-item:hover {
+    background: #f0f0f0;
+}

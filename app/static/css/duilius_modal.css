@@ -3,12 +3,17 @@
 /* Modal Vertical Mejorado */
 .duilius-modal {
     width: 400px;
+    height: 600px;
     background: white;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
     font-family: Arial, sans-serif;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
 }
 
 /* Hidden by Default */
@@ -152,7 +157,7 @@
 .duilius-close {
     background: none;
     border: none;
-    color: white;
+    color: orange;
     font-size: 20px;
     cursor: pointer;
 }
@@ -163,8 +168,22 @@
     right: 15px;
     font-size: 22px;
     cursor: pointer;
-    color: #ffffff;
+    color: #333;
+    width: 30px; /* Dimensiones iguales */
+    height: 30px; /* Dimensiones iguales */
+    display: flex; /* Centra el contenido */
+    justify-content: center; /* Centra el contenido horizontalmente */
+    align-items: center; /* Centra el contenido verticalmente */
+    border-radius: 4px; /* Esquinas ligeramente redondeadas inicialmente */
+    transition: all 0.3s ease; /* Transición suave */
 }
+
+.duilius-close-btn:hover {
+    background-color: #e60000; /* Cambia el color al pasar el cursor */
+    color: white; /* Cambia el color del texto */
+    border-radius: 50%; /* Forma perfectamente circular */
+}
+
 
 /* Predefined Questions */
 .duilius-predefined {
@@ -187,10 +206,6 @@
 
 .duilius-btn:hover {
     background: #0056b3;
-}
-
-.duilius-close-btn:hover {
-    background-color: #e60000;
 }
 
 

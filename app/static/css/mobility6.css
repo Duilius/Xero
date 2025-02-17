@@ -1,0 +1,218 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #333;
+    color: white;
+}
+
+header nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+}
+
+header nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+.cta {
+    display: flex;
+    gap: 1rem;
+}
+
+.cta a {
+    color: white;
+    text-decoration: none;
+    background-color: #007BFF;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+}
+
+#hero {
+    background-color: #f4f4f4;
+    padding: 2rem;
+    text-align: center;
+}
+
+#hero h1 {
+    font-size: 2.5rem;
+}
+
+#hero p {
+    font-size: 1.2rem;
+    margin: 1rem 0;
+}
+
+.btn {
+    background-color: #007BFF;
+    color: white;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+#clients, #about, #practice-areas, #how-it-works, #facts, #advisors, #testimonials, #blog, #consultation {
+    padding: 2rem;
+    text-align: center;
+}
+
+#clients .logos {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+#clients .logos img {
+    height: 50px;
+}
+
+#practice-areas ul {
+    list-style: none;
+    padding: 0;
+}
+
+#practice-areas ul li {
+    margin: 0.5rem 0;
+}
+
+#how-it-works .steps {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 2rem;
+}
+
+#how-it-works .step {
+    width: 20%;
+}
+
+#facts .stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 2rem;
+}
+
+#facts .stat {
+    text-align: center;
+}
+
+#advisors .team {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 2rem;
+}
+
+#advisors .member {
+    width: 20%;
+}
+
+#testimonials blockquote {
+    font-style: italic;
+    margin: 2rem 0;
+}
+
+#blog .articles {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 2rem;
+}
+
+#blog article {
+    width: 30%;
+}
+
+#consultation form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+#consultation form input, #consultation form textarea {
+    padding: 0.5rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+#consultation form button {
+    background-color: #007BFF;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 10% auto;
+    padding: 1rem;
+    width: 50%;
+    border-radius: 5px;
+    position: relative;
+}
+
+.modal-content header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-content header button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.chatbox {
+    height: 300px;
+    overflow-y: scroll;
+    border: 1px solid #ccc;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+#chatbot-button {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    background-color: #007BFF;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
