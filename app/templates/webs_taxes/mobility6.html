@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultic Advisor</title>
+    <link   href="{{url_for( 'static', path='css/mobility6.css')}}" rel="stylesheet">    
+    <script src="https://unpkg.com/htmx.org"></script>
+    <script src="https://unpkg.com/hyperscript.org"></script>
+    <script src="../../static/js/mobility6.js" defer></script>
+    
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#blog">Blog</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="cta">
+            <a href="#appointment">Make an Appointment</a>
+            <span>+49 30 9233255</span>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero">
+        <h1>Our financial advisors are here to help.</h1>
+        <p>We offer comprehensive approaches to financial advice which prioritize the investment insights most likely to aid.</p>
+        <a href="#appointment" class="btn">Make an Appointment</a>
+    </section>
+
+    <!-- Clients & Partners Section -->
+    <section id="clients">
+        <h2>Our Clients & Partners</h2>
+        <div class="logos">
+            <img src="airbnb.png" alt="Airbnb">
+            <img src="amazon.png" alt="Amazon">
+            <img src="fedex.png" alt="FedEx">
+            <img src="google.png" alt="Google">
+            <img src="microsoft.png" alt="Microsoft">
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about">
+        <h2>About Us</h2>
+        <p>Feel confident in your financial future with Consultic. We focus on people—from our first meeting with you to the ongoing relationship we build with your spouse, your family, and your extended financial team.</p>
+        <a href="#works" class="btn">View Our Works</a>
+    </section>
+
+    <!-- Practice Areas Section -->
+    <section id="practice-areas">
+        <h2>Practice Areas</h2>
+        <ul>
+            <li>Financial Planning</li>
+            <li>Investment Management</li>
+            <li>Retirement Planning</li>
+            <li>Estate Planning</li>
+            <li>Tax Preparation</li>
+            <li>Risk Management</li>
+            <li>Cashflow Planning</li>
+            <li>NUA Analysis</li>
+        </ul>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works">
+        <h2>How It Works</h2>
+        <div class="steps">
+            <div class="step">
+                <h3>01 Cultivate your wealth, create your future.</h3>
+                <p>Growing your wealth today may lay the foundation for the future you want tomorrow.</p>
+            </div>
+            <div class="step">
+                <h3>02 Protect your life & assets</h3>
+                <p>Our wealth advisors can partner with you on a plan designed to protect your assets and your life.</p>
+            </div>
+            <div class="step">
+                <h3>03 Simplify Life, Create a Plan</h3>
+                <p>Our wealth advisors are here to listen and offer encouragement and will work to ease your financial stress.</p>
+            </div>
+            <div class="step">
+                <h3>04 Give Gifts, Foster Giving for Generations</h3>
+                <p>When you share your wealth with loved ones and charities you care about, you’re establishing a legacy of generosity.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Facts Section -->
+    <section id="facts">
+        <h2>Why Consultic Advisor is the best?</h2>
+        <div class="stats">
+            <div class="stat">
+                <span>1754</span>
+                <p>Number of Families</p>
+            </div>
+            <div class="stat">
+                <span>$27B</span>
+                <p>Assets Managed</p>
+            </div>
+            <div class="stat">
+                <span>26</span>
+                <p>Full Time Advisors</p>
+            </div>
+            <div class="stat">
+                <span>40</span>
+                <p>Employees</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Meet Our Advisors Section -->
+    <section id="advisors">
+        <h2>Meet Our Advisors</h2>
+        <div class="team">
+            <div class="member">
+                <h3>Aston Turner</h3>
+                <p>Senior Consultant</p>
+            </div>
+            <div class="member">
+                <h3>Jive Richardson</h3>
+                <p>Associate Consultant</p>
+            </div>
+            <div class="member">
+                <h3>Alyssa Healy</h3>
+                <p>Group Manager</p>
+            </div>
+            <div class="member">
+                <h3>Peter Handscomb</h3>
+                <p>Consultant & Analytics</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials">
+        <h2>Our Testimonials</h2>
+        <blockquote>
+            <p>Consultic financial Advisor firm is wonderful. I have had the chance to work with three of the lawyers and they all have been wonderful.</p>
+            <footer>— Jason Behrendorf, CEO & Chief Operating Officer</footer>
+        </blockquote>
+    </section>
+
+    <!-- Blog Section -->
+    <section id="blog">
+        <h2>Our Blog</h2>
+        <div class="articles">
+            <article>
+                <h3>Avancis | December 6, 2021</h3>
+                <p>Avenues Financial hailed as a Global Leader in the Financial Industry.</p>
+                <a href="#">Read More</a>
+            </article>
+            <article>
+                <h3>Avancis | December 6, 2021</h3>
+                <p>How Much Ecommerce Website Costs: Set the Right Budget for Your Project.</p>
+                <a href="#">Read More</a>
+            </article>
+            <article>
+                <h3>Avancis | December 6, 2021</h3>
+                <p>Accommerce Website Development Project Plan: A Guide to Your Project.</p>
+                <a href="#">Read More</a>
+            </article>
+        </div>
+    </section>
+
+    <!-- Free Consultation Section -->
+    <section id="consultation">
+        <h2>Free Consultation</h2>
+        <form id="consultation-form">
+            <input type="text" name="fullname" placeholder="Full name" required>
+            <input type="email" name="email" placeholder="Email address" required>
+            <label>
+                <input type="checkbox" name="new-client"> Are you a new client?
+            </label>
+            <textarea name="message" placeholder="How can we help you?" required></textarea>
+            <button type="submit">Make an Appointment</button>
+        </form>
+    </section>
+
+    <!-- Chatbot Modal -->
+    <div id="chatbot-modal" class="modal">
+        <div class="modal-content">
+            <header>
+                <h3>Chatbot</h3>
+                <button onclick="closeModal()">×</button>
+            </header>
+            <div class="chatbox">
+                <div id="chat-messages"></div>
+            </div>
+            <footer>
+                <input type="text" id="chat-input" placeholder="Type a message...">
+                <button onclick="sendMessage()">Send</button>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2023 Consultic Advisor. All rights reserved.</p>
+    </footer>
+
+    <!-- Chatbot Button -->
+    <button id="chatbot-button" onclick="openModal()">Chat with us</button>
+</body>
+</html>

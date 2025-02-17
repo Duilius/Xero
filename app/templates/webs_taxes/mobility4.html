@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinServ - Professional Financial Services</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Variables y Estilos Base */
+        :root {
+            --primary-dark: #1A2A4F;
+            --primary: #2A4B7C;
+            --accent: #00C4A6;
+            --light: #F8FAFD;
+            --dark: #0F172A;
+            --bg: #0F172A;
+            --text: #F8FAFD;
+            --card-bg: rgba(255,255,255,0.05);
+        }
+
+        [data-theme="light"] {
+            --bg: #F8FAFD;
+            --text: #0F172A;
+            --card-bg: #FFFFFF;
+            --primary-dark: #2A4B7C;
+            --light: #0F172A;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: var(--card-bg);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            padding: 15% 8% 8%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: heroEntry 1s ease forwards;
+        }
+
+        @keyframes heroEntry {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+        }
+
+        /* Secciones Comunes */
+        .section {
+            padding: 6rem 8%;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Servicios */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .service-icon {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Testimonios */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Equipo */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .team-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .team-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            object-fit: cover;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary-dark);
+            color: white;
+            padding: 4rem 8%;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+        }
+
+        /* Chatbot */
+        .chat-icon {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--accent);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0,196,166,0.3);
+            z-index: 1000;
+        }
+
+        .chat-modal {
+            position: fixed;
+            bottom: 6rem;
+            right: 2rem;
+            width: 400px;
+            max-width: 90%;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .chat-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Tema */
+        .theme-toggle {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            background: var(--accent);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .nav-links { display: none; }
+            .chat-modal { width: 90%; right: 5%; }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="#" class="logo">FinServ</a>
+        <div class="nav-links">
+            <a href="#services">Services</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <h1>Expert Financial Services for Your Success</h1>
+        <p>Comprehensive tax, accounting, and wealth management solutions for local and international clients.</p>
+        <a href="#services" class="cta-button">Explore Services</a>
+    </section>
+
+    <!-- Services -->
+    <section class="section" id="services">
+        <h2 class="section-title">Our Services</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <i class="fas fa-file-invoice-dollar service-icon"></i>
+                <h3>Tax Services</h3>
+                <p>Comprehensive tax planning and preparation for individuals and businesses</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-chart-line service-icon"></i>
+                <h3>Wealth Management</h3>
+                <p>Personalized investment strategies to help you achieve your financial goals</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-building service-icon"></i>
+                <h3>Corporate Services</h3>
+                <p>Business advisory, auditing, and compliance services for companies</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="section" id="testimonials">
+        <h2 class="section-title">Client Testimonials</h2>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <p>"Outstanding service and professional guidance that transformed our financial strategy."</p>
+                <h4>- Michael Johnson, CEO</h4>
+            </div>
+            <div class="testimonial-card">
+                <p>"The best financial decision we've made. Highly recommended for international services."</p>
+                <h4>- Sarah Thompson, CFO</h4>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team -->
+    <section class="section" id="team">
+        <h2 class="section-title">Our Experts</h2>
+        <div class="team-grid">
+            <div class="team-card">
+                <img src="advisor1.jpg" alt="Financial Advisor" class="team-photo">
+                <h3>Emily Davis</h3>
+                <p>Senior Tax Advisor</p>
+            </div>
+            <div class="team-card">
+                <img src="advisor2.jpg" alt="Financial Advisor" class="team-photo">
+                <h3>James Wilson</h3>
+                <p>Wealth Manager</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div>
+                <h4>FinServ</h4>
+                <p>Expert financial solutions for global clients</p>
+            </div>
+            <div>
+                <h4>Services</h4>
+                <ul>
+                    <li>Tax Planning</li>
+                    <li>Wealth Management</li>
+                    <li>Corporate Advisory</li>
+                </ul>
+            </div>
+            <div>
+                <h4>Contact</h4>
+                <p>contact@finserv.com</p>
+                <p>+61 2 1234 5678</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chatbot -->
+    <div class="chat-icon" onclick="toggleChat()">💬</div>
+    <div class="chat-modal" id="chatModal">
+        <div class="chat-header">
+            <img src="advisor.jpg" alt="Advisor" class="chat-avatar">
+            <div>
+                <h4>Financial Assistant</h4>
+                <p>We're here to help</p>
+            </div>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="message bot-message">Hello! How can we assist you today?</div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" class="chat-input" placeholder="Type your message..." 
+                   id="userInput" onkeypress="handleChatInput(event)">
+        </div>
+    </div>
+
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <script>
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            navbar.classList.toggle('scrolled', window.scrollY > 100);
+        });
+
+        // Theme Management
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+
+        function setTheme(theme) {
+            body.setAttribute('data-theme', theme);
+            document.cookie = `theme=${theme}; path=/; max-age=31536000`;
+            themeToggle.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const newTheme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        });
+
+        // Load Saved Theme
+        const savedTheme = document.cookie.split('; ').find(row => row.startsWith('theme='))?.split('=')[1];
+        if(savedTheme) setTheme(savedTheme);
+
+        // Chatbot Logic
+        function toggleChat() {
+            const modal = document.getElementById('chatModal');
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function handleChatInput(e) {
+            if(e.key === 'Enter' && e.target.value.trim()) {
+                const userMessage = e.target.value;
+                const chatBody = document.getElementById('chatBody');
+                
+                // User Message
+                const userDiv = document.createElement('div');
+                userDiv.className = 'message user-message';
+                userDiv.textContent = userMessage;
+                chatBody.appendChild(userDiv);
+                
+                // Bot Response
+                setTimeout(() => {
+                    const botDiv = document.createElement('div');
+                    botDiv.className = 'message bot-message';
+                    botDiv.textContent = "Thank you for your message. Our team will respond shortly.";
+                    chatBody.appendChild(botDiv);
+                    chatBody.scrollTop = chatBody.scrollHeight;
+                }, 1000);
+
+                e.target.value = '';
+            }
+        }
+
+        // Hero Animation
+        document.querySelectorAll('.hero h1, .hero p, .hero .cta-button').forEach((el, index) => {
+            el.style.animationDelay = `${index * 0.2}s`;
+        });
+    </script>
+</body>
+</html>

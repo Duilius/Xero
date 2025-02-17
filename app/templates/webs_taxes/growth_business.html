@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estrategia para el Crecimiento Empresarial</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            position: relative;
+            margin-bottom: 60px; /* Espacio para que el sticky footer no cubra contenido */
+            height: auto;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        .highlight {
+            background: yellow;
+            padding: 2px 5px;
+        }
+        .highlight2 {
+            background: rgb(254, 223, 166);
+            padding: 2px 5px;
+        }
+        .cta {
+            display: block;
+            text-align: center;
+            margin: 20px 0;
+            padding: 10px;
+            background: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .cta:hover {
+            background: #0056b3;
+        }
+        .sidebar {
+            position: fixed;
+            top: 50px;
+            left: 20px;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+        .sidebar a {
+            display: block;
+            padding: 5px 0;
+            color: #007BFF;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            text-decoration: underline;
+        }
+        .chart-container {
+            width: 100%;
+            margin: 20px 0;
+        }
+        .landing-section {
+            text-align: center;
+            padding: 40px;
+            background: #eef5ff;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        .landing-section img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        .landing-section p {
+            font-size: 18px;
+            color: #333;
+        }
+        .download-btn {
+            display: inline-block;
+            padding: 15px 20px;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+        .download-btn:hover {
+            background: #218838;
+        }
+        /*DDDDDDDDDD*/
+        .contact-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+        }
+        .contact-left {
+            text-align: center;
+        }
+        .contact-left img {
+            width: 150px;
+            height: auto;
+            border-radius: 50%;
+            display: block;
+            margin: 0 auto;
+        }
+        .contact-left h3 {
+            margin-top: 10px;
+        }
+        .contact-right {
+            margin-top: -85px;
+            text-align: left;
+            line-height: 5px;
+        }
+        .sticky-footer {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 800px; /* Igual al max-width del contenedor principal */
+            background: #007BFF;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 18px;
+            box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .sticky-footer p {
+            margin: 5px 0;
+        }
+        .email-link {
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h3>Índice</h3>
+        <a href="#rentabilidad">Evaluar Rentabilidad</a>
+        <a href="#productividad">Medir Productividad</a>
+        <a href="#herramientas">Implementar Herramientas</a>
+        <a href="#landing">Solución a tu Problema</a>
+    </div>
+    
+    <div class="container">
+        <h1>Estrategia para el Crecimiento Empresarial en un Estudio Contable</h1>
+        
+        <p>¿Tu estudio contable está creciendo al ritmo que deseas? <span class="highlight">¿Sabes si todos tus clientes son realmente rentables?</span></p>
+        
+        <h2 id="rentabilidad">1. Evaluar la Rentabilidad de los Clientes Actuales</h2>
+        <p>Para optimizar tu negocio, clasifica a los clientes por ingresos generados, horas trabajadas y costos de herramientas utilizadas.</p>
+        <div class="chart-container">
+            <canvas id="rentabilidadChart"></canvas>
+        </div>
+        
+        <h2 id="productividad">2. Medir la Productividad de los Trabajadores</h2>
+        <p>Analiza cuánto aporta cada trabajador y si su desempeño justifica su costo.</p>
+        <div class="chart-container">
+            <canvas id="productividadChart"></canvas>
+        </div>
+        
+        <h2 id="herramientas">3. Implementar Herramientas de Apoyo</h2>
+        <p>Las herramientas tecnológicas pueden optimizar procesos y reducir costos operativos.</p>
+        <p>El uso de herramientas adecuadas puede significar la diferencia entre un equipo sobrecargado y uno altamente eficiente. Es importante considerar:
+
+        <br>
+        <span class="highlight"><a href="#landing">Solicita el PDF Completo - Gratuito</a></span>
+
+        </p>
+
+        <br>
+        <hr>
+
+        <h3>CÓMO CRECER TU CARTERA DE CLIENTES</h3>
+        <p>No basta con mantener a los clientes actuales, también es necesario atraer nuevos.</p>
+        <p>Algunas estrategias para lograrlo incluyen:</p> 
+
+        <li>Mejorar la presencia digital (sitio web, redes sociales, SEO)</li>
+
+        <br>
+        <span class="highlight2"><a href="#landing">Toca para <b>leer más estrategias ...</b></a></span>
+        
+        <br>
+        <hr>
+
+        <h3>CUIDAR LOS COSTOS Y LA RENTABILIDAD</h3>
+        <p>Para evitar riesgos, es importante identificar costos ocultos como la rotación de personal, la dependencia de pocos clientes o procesos poco eficientes. Una estrategia clave es ... <span class="highlight2"><a href="#landing">Toca y conoce <b>las estrategias ...</b></a></span> </p>
+
+        <br>
+        <hr>
+
+        <h2 id="landing">Solución a tu Problema</h2>
+        <div class="landing-section">
+            <img src="portada_libro.jpg" alt="Portada del Libro">
+            <p>Descubre cómo transformar tu estudio contable con estrategias probadas que aumentarán tu rentabilidad y eficiencia.</p>
+            <h4>Escríbeme para descargar la ESTRATEGIA completa o para CONSULTA GRATUITA</h4>
+            <a class="download-btn" href="mailto:duilio@dataextractor.cloud?subject=Solicitud%20de%20PDF%20-%20Estrategia%20Crecimiento" target="_blank">Solicitar PDF</a>
+            <!--<a class="download-btn" href="estrategia_crecimiento.pdf" download>Descargar PDF</a>-->
+        </div>
+        
+        
+
+        <div class="contact-container">
+            <div class="contact-left">
+                <img src="/static/img/duilio-foto-avatar.webp" alt="Duilio Restuccia" width="25%">
+                <h3>Duilio Restuccia</h3>
+            </div>
+            <div class="contact-right">
+                <p>Ingeniero Economista</p>
+                <p>Ingeniero de Datos</p>
+                <p>Implemento I.A en empresas</p>
+                <p>Programador Python</p>
+                <p>Desarrollador Web</p>
+            </div>
+        </div>
+        
+        <div class="sticky-footer">
+            <p>Para consultas o descargar el PDF, escríbeme</p>
+            <p class="email-link">duilio@dataextractor.cloud</p>
+        </div>
+        
+    </div>
+
+
+
+    
+    <script>
+        const ctx1 = document.getElementById('rentabilidadChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: ['Cliente A', 'Cliente B', 'Cliente C'],
+                datasets: [{
+                    label: 'Rentabilidad',
+                    data: [20000, 15000, 30000],
+                    backgroundColor: 'rgba(0, 123, 255, 0.5)'
+                }]
+            }
+        });
+
+        const ctx2 = document.getElementById('productividadChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: ['Enero', 'Febrero', 'Marzo'],
+                datasets: [{
+                    label: 'Productividad',
+                    data: [80, 85, 90],
+                    borderColor: 'rgba(0, 123, 255, 1)',
+                    fill: false
+                }]
+            }
+        });
+    </script>
+</body>
+</html>
