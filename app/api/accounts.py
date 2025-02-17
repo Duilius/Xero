@@ -11,7 +11,7 @@ from app.models.account_structures import XeroAccountStructure
 from app.services.xero_auth_service import XeroAuthService
 from app.codigos_internos_xero import get_xero_auth_service, XeroToken
 from app.models.organization import Organization
-from app.core.cache import redis  # Importar instancia Redis configurada
+#from app.core.cache import redis  # Importar instancia Redis configurada
 from app.services.xero_account_sync import XeroAccountService as AccountService
 
 from app.models.xero_mapping import AccountMapping, AccountChange
@@ -49,9 +49,9 @@ async def get_cross_balance(
    cache_key = f"balance:{from_org_id}:{to_org_id}:{account_id}"
    
    # Check cache
-   cached = await redis.get(cache_key)
-   if cached:
-       return json.loads(cached)
+   #cached = await redis.get(cache_key)
+   #if cached:
+   #    return json.loads(cached)
    
    # Get fresh data from Xero
    token = db.query(XeroToken).filter(XeroToken.organization_id == from_org_id).first()
@@ -62,9 +62,9 @@ async def get_cross_balance(
    )
    
    # Cache result
-   await redis.set(cache_key, json.dumps(balance), ex=7200)
+  # await redis.set(cache_key, json.dumps(balance), ex=7200)
    
-   return balance
+  # return balance
 
 @router.get("/api/organizations/list")
 async def list_organizations(
