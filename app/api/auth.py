@@ -1,5 +1,6 @@
 from fastapi import FastAPI, APIRouter, Depends, Request, HTTPException, Response, Query
 from fastapi.responses import RedirectResponse, HTMLResponse
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from app.db.database import get_db
 from app.services.xero_oauth_service import xero_oauth_service
