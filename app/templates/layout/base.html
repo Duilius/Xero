@@ -21,6 +21,19 @@
     {% block head %}{% endblock %}
 </head>
 <body>
+    
     {% block content %}{% endblock %}
+<!-- Incluir el modal del chatbot -->
+{% block chatbot %}
+    {% include 'duilius_modal.html' %}
+{% endblock %}
+
+<!-- Enlace al archivo CSS del chatbot -->
+<link rel="stylesheet" href="/static/css/duilius_modal.css">
+
+<!-- Enlace al archivo JS del chatbot -->
+<script src="/static/js/duilius_modal.js"></script>
+
+    
 </body>
 </html>
