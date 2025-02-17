@@ -2,7 +2,9 @@ from .base import Base, TimestampMixin
 from .organization import Organization, OrganizationUser, OrganizationStatus, SubscriptionType
 from .user import User, UserRole, UserStatus
 from .xero_token import XeroToken
-from .adjustments import Authorizer  # Solo importamos lo que vamos a usar ahora
+from .adjustments import Authorizer
+from .account_structures import XeroAccountStructure
+from .xero_mapping import AccountMapping
 
 __all__ = [
     'Base',
@@ -15,5 +17,7 @@ __all__ = [
     'UserRole',
     'UserStatus',
     'XeroToken',
-    'Authorizer'  # Lo agregamos al __all__
+    'Authorizer',
+    'XeroAccountStructure',
+    'AccountMapping'
 ]

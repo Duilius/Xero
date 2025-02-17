@@ -35,6 +35,8 @@ class User(Base, TimestampMixin):
     # Solo las relaciones que realmente necesitas
     organizations = relationship("OrganizationUser", back_populates="user")
 
+    # app/models/user.py
+    account_changes = relationship("AccountChange", back_populates="user")
     
     #role = Column(Enum(UserRole), nullable=False)
     #status = Column(Enum(UserStatus), default=UserStatus.ACTIVE)

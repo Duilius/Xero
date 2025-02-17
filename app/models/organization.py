@@ -3,6 +3,10 @@ from sqlalchemy.orm import relationship
 from .base import Base, TimestampMixin
 from .user import User
 import enum
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.models.account_structures import XeroAccountStructure
 
 class SubscriptionType(str, enum.Enum):
     TRIAL = "TRIAL"
@@ -15,6 +19,13 @@ class OrganizationStatus(str, enum.Enum):
     SUSPENDED = "SUSPENDED"
     CANCELLED = "CANCELLED"
 
+
+if TYPE_CHECKING:
+    from .account_structures import XeroAccountStructure
+    from .xero_mapping import AccountMapping
+    from .xero_token import XeroToken
+    from .adjustments import Authorizer
+
 class Organization(Base, TimestampMixin):
     __tablename__ = "xero_organizations"
 
@@ -25,15 +36,13 @@ class Organization(Base, TimestampMixin):
     status = Column(Enum(OrganizationStatus), default=OrganizationStatus.ACTIVE)
     subscription_type = Column(Enum(SubscriptionType), default=SubscriptionType.TRIAL)
     subscription_ends_at = Column(DateTime, nullable=True)
-    created_at = Column(DateTime, nullable=True)
-    updated_at = Column(DateTime, nullable=True)
 
-    # Agregar solo esta relación:
-    authorizers = relationship("Authorizer", back_populates="organization")
-    
-    # Mantener las relaciones existentes:
+    # Relaciones
     users = relationship("OrganizationUser", back_populates="organization")
     tokens = relationship("XeroToken", back_populates="organization")
+    authorizers = relationship("Authorizer", back_populates="organization")
+    account_mappings = relationship("AccountMapping", back_populates="organization")
+    accounts = relationship("XeroAccountStructure", back_populates="organization")
 
 class OrganizationUser(Base, TimestampMixin):
     __tablename__ = "xero_organization_users"
