@@ -15,33 +15,107 @@ function closeDuiliusModal() {
 }
 
 // Enviar mensaje al chatbot
+// Enviar mensaje al chatbot
 async function sendDuiliusMessage() {
     const userInput = document.getElementById('duiliusUserInput');
     const message = userInput.value.trim();
-    const chatWindow = document.getElementById('duiliusMessages');
 
     if (message === "") return;
-
-    // Mostrar el mensaje del usuario en la ventana de chat
     appendMessage('user', message);
     userInput.value = "";
 
     try {
-        // Enviar mensaje al servidor
-        const response = await fetch('/chatbot/duilius-chat', {
+        const response = await fetch('/chatbot/process-query', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message })
         });
 
-        const data = await response.json();
-        appendMessage('duilius', data.response);
+        const result = await response.json();
+        
+        if (result.success) {
+            // Mostrar datos si hay query ejecutado
+            if (result.data) {
+                // Mostrar tabla o gráfico según metadata
+                displayResponse(result.data, result.metadata);
+            } else {
+                // Mostrar solo respuesta general
+                appendMessage('duilius', result.metadata.response);
+            }
+            
+            // Mostrar insights y tips
+            if (result.metadata.insights) {
+                displayInsights(result.metadata.insights);
+            }
+            if (result.metadata.tips) {
+                displayTips(result.metadata.tips);
+            }
+        } else {
+            appendMessage('duilius', 'Sorry, I could not process your request.');
+        }
     } catch (error) {
-        appendMessage('duilius', 'Oops! Something went wrong. Please try again later.');
+        appendMessage('duilius', 'Oops! Something went wrong.');
     }
 }
+
+// Función para mostrar datos y gráficos
+function displayResponse(data, metadata) {
+    const chatWindow = document.getElementById('duiliusMessages');
+    const responseDiv = document.createElement('div');
+    responseDiv.classList.add('duilius-response');
+
+    // Agregar título
+    const title = document.createElement('h3');
+    title.textContent = metadata.title;
+    responseDiv.appendChild(title);
+
+    // Mostrar datos según el tipo
+    if (metadata.response_type === 'table') {
+        responseDiv.appendChild(createTable(data));
+    }
+
+    // Mostrar gráfico si es necesario
+    if (metadata.graph_type !== 'none') {
+        const chartDiv = document.createElement('div');
+        chartDiv.id = 'chart-' + Date.now();
+        responseDiv.appendChild(chartDiv);
+        createChart(chartDiv.id, data, metadata.graph_type);
+    }
+
+    chatWindow.appendChild(responseDiv);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+// Función para mostrar insights
+function displayInsights(insights) {
+    const chatWindow = document.getElementById('duiliusMessages');
+    const insightsDiv = document.createElement('div');
+    insightsDiv.classList.add('duilius-insights');
+    
+    Object.entries(insights).forEach(([key, value]) => {
+        const p = document.createElement('p');
+        p.textContent = `${key}: ${value}`;
+        insightsDiv.appendChild(p);
+    });
+
+    chatWindow.appendChild(insightsDiv);
+}
+
+// Función para mostrar tips
+function displayTips(tips) {
+    const chatWindow = document.getElementById('duiliusMessages');
+    const tipsDiv = document.createElement('div');
+    tipsDiv.classList.add('duilius-tips');
+    
+    tips.forEach(tip => {
+        const p = document.createElement('p');
+        p.textContent = `💡 ${tip}`;
+        tipsDiv.appendChild(p);
+    });
+
+    chatWindow.appendChild(tipsDiv);
+}
+
 
 // Agregar mensaje al chat
 function appendMessage(sender, text) {
@@ -123,3 +197,18 @@ function addChatbotMessage(message, sender) {
     messagesDiv.appendChild(messageDiv);
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
+
+
+/* QUERYS  */
+document.getElementById('enableSQLQuery').addEventListener('change', function() {
+    const sqlInput = document.getElementById('sqlQueryInput');
+    const sqlExamples = document.getElementById('sqlExamples');
+
+    if (this.checked) {
+        sqlInput.removeAttribute('disabled');
+        sqlExamples.style.display = 'block';
+    } else {
+        sqlInput.setAttribute('disabled', 'true');
+        sqlExamples.style.display = 'none';
+    }
+});
