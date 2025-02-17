@@ -14,6 +14,7 @@ from app.models.organization import Organization, OrganizationUser, Organization
 from app.models.xero_token import XeroToken
 #from app.services.xero_oauth import xero_oauth_service
 from app.services.xero_oauth_service import xero_oauth_service
+from app.models.account_structures import XeroAccountStructure
 
 from app.core.security import security_manager
 from sqlalchemy.orm import Session
@@ -29,25 +30,56 @@ class XeroAuthService:
 
     async def handle_oauth_callback(self, db: Session, code: str) -> Dict:
         try:
+            # 1. Intercambiar código por tokens
+            print("Getting tokens with code:", code)
             # Exchange code for tokens
             token_data = await xero_oauth_service.exchange_code_for_tokens(code)
             access_token = token_data["access_token"]
+            print("Token response received")
 
+            # 2. Obtener info del usuario
+            print("Getting user info")
             # Get user info from Xero
             user_info = await self._get_user_info(access_token)
             print("User info from Xero:", user_info)  # Debug
             
+            
+            # 3. Obtener conexiones
+            print("Getting tenant connections")
             # Create or update user
             user = await self._create_or_update_user(db, user_info)
             print("User after create/update:", user.id)  # Debug
 
             # Get Xero tenant connections
             tenant_connections = await self._get_tenant_connections(access_token)
+            print("Connections:", tenant_connections)
             
+            # 4. Preparar datos de sesión
+            session_data = {
+                "session_xero": {
+                    "user_info": user_info,
+                    "organizations": {
+                        "connections": tenant_connections
+                    }
+                }
+            }
+
+            # 5. Codificar token
+            token = self.encode_session_token(session_data)
+
             # Process each tenant connection
             tenant_ids = await self._process_tenant_connections(
                 db, user.id, tenant_connections, token_data
             )
+
+            # Después de obtener las conexiones
+            for connection in tenant_connections:
+                # Sincronizar estructura de cuentas
+                await self.sync_account_structure(
+                    db,
+                    connection["tenantId"],  # Notar que es "tenantId" no "tenant_id"
+                    access_token  # Usar el access_token que ya tenemos
+                )
 
             # Crear token con datos mejorados
             session_xero = {
@@ -98,6 +130,62 @@ class XeroAuthService:
                 status_code=400,
                 detail=f"OAuth callback failed: {str(e)}"
             )
+
+    async def sync_account_structure(
+    self,
+    db: Session,
+    tenant_id: str,
+    access_token: str
+    ) -> bool:
+        try:
+            print(f"Syncing accounts for tenant: {tenant_id}")
+            async with httpx.AsyncClient() as client:
+                response = await client.get(
+                    "https://api.xero.com/api.xro/2.0/Accounts",
+                    headers={
+                        "Authorization": f"Bearer {access_token}",
+                        "Xero-tenant-id": tenant_id,
+                        "Accept": "application/json"
+                    }
+                )
+                
+                if response.status_code == 200:
+                    accounts_data = response.json()
+                    organization = (
+                        db.query(Organization)
+                        .join(XeroToken)
+                        .filter(XeroToken.tenant_id == tenant_id)
+                        .first()
+                    )
+                    
+                    if not organization:
+                        print(f"Organization not found for tenant_id: {tenant_id}")
+                        return False
+                    
+                    # Procesar cada cuenta
+                    for account in accounts_data.get("Accounts", []):
+                        account_structure = XeroAccountStructure(
+                            organization_id=organization.id,
+                            account_id=account["AccountID"],
+                            code=account["Code"],
+                            name=account["Name"],
+                            type=account["Type"],
+                            report_type="BS" if account["Type"] in ["ASSET", "LIABILITY", "EQUITY"] else "PL",
+                            last_sync=datetime.utcnow()
+                        )
+                        db.add(account_structure)
+                    
+                    db.commit()
+                    print(f"Synchronized {len(accounts_data.get('Accounts', []))} accounts for org {organization.id}")
+                    return True
+                
+                print(f"Failed to get accounts. Status: {response.status_code}")
+                return False
+                
+        except Exception as e:
+            print(f"Error syncing accounts: {str(e)}")
+            db.rollback()
+            return False
 
     async def _get_user_info(self, access_token: str) -> Dict:
         """Get user information from Xero."""
@@ -439,42 +527,89 @@ class XeroAuthService:
                 status_code=400,
                 detail=f"Error processing auth data: {str(e)}"
             )
-        
 
-# app/services/xero_auth_service.py
-
-# En xero_auth_service.py
-async def refresh_access_token(self, tenant_id: str, db: Session) -> str:
-    """Refresh token automático con manejo de errores"""
-    try:
-        token = db.query(XeroToken).filter(
-            XeroToken.tenant_id == tenant_id
-        ).first()
+    async def refresh_token(self, refresh_token: str) -> dict:
+        data = {
+            "grant_type": "refresh_token",
+            "refresh_token": refresh_token,
+            "client_id": settings.XERO_CLIENT_ID,
+            "client_secret": settings.XERO_CLIENT_SECRET
+        }
         
-        if not token:
-            raise HTTPException(status_code=401, detail="No token found")
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                "https://identity.xero.com/connect/token",
+                data=data
+            )
+            response.raise_for_status()
+            return response.json()
+
+    # En xero_auth_service.py
+    async def refresh_access_token(self, tenant_id: str, db: Session) -> str:
+        """Refresh token automático con manejo de errores"""
+        try:
+            token = db.query(XeroToken).filter(
+                XeroToken.tenant_id == tenant_id
+            ).first()
             
-        # Renovar token antes de que expire (5 minutos antes)
-        if token.token_expires_at > datetime.now(timezone.utc) + timedelta(minutes=5):
+            if not token:
+                raise HTTPException(status_code=401, detail="No token found")
+                
+            # Renovar token antes de que expire (5 minutos antes)
+            if token.token_expires_at > datetime.now(timezone.utc) + timedelta(minutes=5):
+                return token.access_token
+                
+            new_token_data = await self._refresh_token(token.refresh_token)
+            
+            # Actualizar token
+            token.access_token = new_token_data["access_token"]
+            token.refresh_token = new_token_data.get("refresh_token", token.refresh_token)
+            token.token_expires_at = datetime.now(timezone.utc) + timedelta(
+                seconds=new_token_data.get("expires_in", 1800)
+            )
+            token.updated_at = datetime.now(timezone.utc)
+            
+            db.commit()
             return token.access_token
+        except Exception as e:
+            # Si falla el refresh, redirigir a reconexión con Xero
+            raise HTTPException(
+                status_code=401,
+                detail="Session expired. Please reconnect with Xero."
+            )
+
+
+    async def refresh_token_if_needed(self, token: XeroToken, db: Session) -> XeroToken:
+        print("===========>  ya llegué", db )
+        if not token:
+            print("11111===> TOKEN EXPIRA EN ", token.token_expires_at)
+            raise HTTPException(401, "No token found")
             
-        new_token_data = await self._refresh_token(token.refresh_token)
+        now = datetime.now(timezone.utc)
+
+         # Asegurar que token_expires_at tenga zona horaria
+        if token.token_expires_at and token.token_expires_at.tzinfo is None:
+            token.token_expires_at = token.token_expires_at.replace(tzinfo=timezone.utc)
+
+        print("22222===> TOKEN EXPIRA EN ", token.token_expires_at)
+
+        # Si no hay fecha de expiración o si faltan menos de 5 minutos para expirar
+        if not token.token_expires_at or (token.token_expires_at <= now + timedelta(seconds=300)):
+            
+            print("33333===> TOKEN EXPIRA EN ", token.token_expires_at)
+            try:
+                new_token = await self.refresh_token(token.refresh_token)
+                
+                token.access_token = new_token["access_token"]
+                token.refresh_token = new_token["refresh_token"]
+                token.token_expires_at = datetime.now(timezone.utc) + timedelta(seconds=new_token["expires_in"])
+                token.updated_at = datetime.now(timezone.utc)
+                
+                db.commit()
+                
+            except Exception as e:
+                raise HTTPException(401, "Session expired. Please login again.")
         
-        # Actualizar token
-        token.access_token = new_token_data["access_token"]
-        token.refresh_token = new_token_data.get("refresh_token", token.refresh_token)
-        token.token_expires_at = datetime.now(timezone.utc) + timedelta(
-            seconds=new_token_data.get("expires_in", 1800)
-        )
-        token.updated_at = datetime.now(timezone.utc)
-        
-        db.commit()
-        return token.access_token
-    except Exception as e:
-        # Si falla el refresh, redirigir a reconexión con Xero
-        raise HTTPException(
-            status_code=401,
-            detail="Session expired. Please reconnect with Xero."
-        )
+        return token
 
 xero_auth_service = XeroAuthService()
