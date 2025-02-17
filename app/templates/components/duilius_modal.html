@@ -36,6 +36,25 @@ Interfaz del modal con ventana de chat e input para mensajes.
             <input type="text" id="duiliusUserInput" placeholder="Escribe tu mensaje..." onkeydown="if(event.key === 'Enter') sendDuiliusMessage()">
             <button onclick="sendDuiliusMessage()">Enviar</button>
         </div>
+
+        <!--
+        QUERYS
+        -->
+        <label>
+            <input type="checkbox" id="enableSQLQuery"> Obtener datos de tablas
+        </label>
+        
+        <input type="text" id="sqlQueryInput" placeholder="Ejemplo: ¿Cuánto pagaron los clientes en impuestos este mes?" disabled>
+        
+        <div id="sqlExamples" style="display: none;">
+            <p><strong>Ejemplos:</strong></p>
+            <ul>
+                <li>¿Cuántos productos en stock tienen menos de 5 unidades?</li>
+                <li>Mostrar la lista de clientes con facturas vencidas.</li>
+            </ul>
+        </div>
+        
+
     </div>
 </div>
 
