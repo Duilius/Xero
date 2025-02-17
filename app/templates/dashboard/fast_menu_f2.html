@@ -1,0 +1,94 @@
+<html>
+<body>
+    <head>
+        <script src="{{ url_for('static', path='js/tabs.js') }}"></script>
+        <script src="{{ url_for('static', path='js/balance.js') }}"></script>
+    </head>
+<!-- SELECTOR DE FECHAS -->
+    <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Period
+        </label>
+        <select id="period-select" class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            <option value="today">Today (23 Jan 2025)</option>
+            <option value="month-end">End of this month (31 Jan 2025)</option>
+            <option value="last-month">End of last month (31 Dec 2024)</option>
+            <option value="last-quarter">End of last quarter (31 Dec 2024)</option>
+            <option value="last-year">End of last financial year (31 Dec 2024)</option>
+            <option value="custom">Custom date</option>
+        </select>
+        <div id="custom-date" class="hidden">
+            <div class="flex gap-4">
+                <div class="flex-1">
+                    <label class="block text-sm mb-1">From</label>
+                    <input type="date" class="w-64 border rounded-lg p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                </div>
+                <div class="flex-1">
+                    <label class="block text-sm mb-1">To</label>
+                    <input type="date" class="w-64 border rounded-lg p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- *************** SELECTOR DE CUENTAS-PLAN CONTABLE ************* SELECTOR DE CUENTAS-PLAN CONTABLE ****************-->
+    <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Search Account
+        </label>
+        <div class="relative">
+            <input 
+                type="text" 
+                id="account-search"
+                class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                placeholder="Search by code or account name (min. 3 characters)..."
+            >
+            <div id="account-results" class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 shadow-xl rounded-lg max-h-96 overflow-y-auto hidden">
+            </div>
+        </div>
+    </div>
+    <!--<div id="loans-view">-->
+    <!-- Stats Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+    </div>
+
+    <!-- Organization Search & Balance View -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+        <div class="p-6">
+            <div class="max-w-3xl">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Search Organization
+                </label>
+                <div class="relative">
+                    <input 
+                        type="text" 
+                        id="org-search"
+                        class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        placeholder="Type organization name (min. 3 characters)..."
+                    >
+
+                    <!-- Agregar el indicador de búsqueda -->
+                    <div id="search-indicator" class="absolute right-3 top-2.5 hidden">
+                        <svg class="animate-spin h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </div>
+
+                    <!-- Resultados de búsqueda aparecerán aquí -->
+                    <div id="search-results" class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 shadow-xl rounded-lg max-h-96 overflow-y-auto hidden">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Balance Sheet View (inicialmente oculto) -->
+        <div id="balance-sheet-view" class="hidden">
+            {% include 'components/balance_sheet.html' %}
+        </div>
+    </div>
+    <div id="quick-menu" class="fixed right-0 top-0 h-full w-64 bg-white dark:bg-gray-800 shadow-lg transform translate-x-full transition-transform duration-300 z-50"></div>
+
+</body>
+</html>

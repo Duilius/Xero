@@ -1,8 +1,15 @@
+<html>
 {% extends "dashboard/base.html" %}
 
 {% block title %}Dashboard - CloudAudit Pro{% endblock %}
 
 {% block content %}
+
+<link rel="stylesheet" href="/static/css/chatDuilius.css">
+<link rel="stylesheet" href="/static/css/cuadro_combinado.css">
+
+
+<body>
 <div class="space-y-6">
     <!-- Page Header -->
     <div class="flex items-center justify-between">
@@ -17,53 +24,50 @@
                 </svg>
                 Sync with Xero
             </button>
-            <span id="sync-status" class="text-sm text-gray-500 dark:text-gray-400 timestamp" data-utc="{{ last_sync }}">Last synced:{{ last_sync }}</span>
+        <!--    <span id="sync-status" class="text-sm text-gray-500 dark:text-gray-400 timestamp" data-utc="{{ last_sync }}">Last synced:{{ last_sync }}</span>
+        -->
         </div>
     </div>
     <!--nuevo -->
+
     <!-- Tabs Navigation -->
+    <!-- Después del header existente -->
+    <div class="space-y-6">
+        <!-- Sistema de Tabs -->
+        <div class="tab-system">
+            <!-- Tabs Principales -->
+            <div class="primary-tabs flex border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
+                <button data-tab="balance" class="tab-active min-w-max px-4 py-2 text-sm font-medium text-primary-600 border-b-2 border-primary-600 ">Balance Sheet</button>
+                <button data-tab="pl" class="min-w-max px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400">Profit & Loss</button>
+                <button data-tab="payroll" class="min-w-max px-4 py-2 text-text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400">Payroll</button>
+            </div>
 
-    <!--<div id="loans-view">-->
-    <!-- Stats Overview -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-    </div>
-
-    <!-- Organization Search & Balance View -->
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
-        <div class="p-6">
-            <div class="max-w-3xl">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Search Organization
-                </label>
-                <div class="relative">
-                    <input 
-                        type="text" 
-                        id="org-search"
-                        class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                        placeholder="Type organization name (min. 3 characters)..."
-                    >
-
-                    <!-- Agregar el indicador de búsqueda -->
-                    <div id="search-indicator" class="absolute right-3 top-2.5 hidden">
-                        <svg class="animate-spin h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                    </div>
-
-                    <!-- Resultados de búsqueda aparecerán aquí -->
-                    <div id="search-results" class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 shadow-xl rounded-lg max-h-96 overflow-y-auto hidden">
-                    </div>
-                </div>
+            <!-- Tabs Secundarios -->
+            <div class="secondary-tabs flex border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
+                <!-- Se llena dinámicamente -->
             </div>
         </div>
+    
+        <!-- Contenedor para resultados CUADRO COMBINADO -->
+        <div class="results-combinado">
 
-        <!-- Balance Sheet View (inicialmente oculto) -->
-        <div id="balance-sheet-view" class="hidden">
-            {% include 'components/balance_sheet.html' %}
+        </div>
+
+
+        <!-- Contenedor para resultados de tabs -->
+        <div class="tab-content bg-white dark:bg-gray-800 rounded-lg shadow">
+            <div id="balance-content" class="tab-pane">
+                <!-- Tu contenido actual de balance -->
+            </div>
+            <div id="pl-content" class="tab-pane hidden">
+                <!-- Contenido P&L -->
+            </div>
+            <div id="payroll-content" class="tab-pane hidden">
+                <!-- Contenido Payroll -->
+            </div>
         </div>
     </div>
+
 
 
     <!-- Alerts and Notifications -->
@@ -111,12 +115,82 @@
     </div>
 </div>
 
+<!-- ******************** chatbot DEEPSEEK ***********    chatbot DEEPSEEK       ****************   chatbot DEEPSEEK    ******************-->
+<!-- Botón para abrir el modal
+<button onclick="document.getElementById('chatbot-modal').style.display = 'block'">
+    Abrir Chatbot
+</button> -->
+
+<!-- Modal del Chatbot -->
+<div id="chatbot-modal">
+    <!-- Cabecera del Chatbot -->
+    <div id="chatbot-header">
+        <img src="/static/img/duilio-foto-avatar.webp" width="9%" alt="Duilius Avatar" id="bot-avatar">
+        <h2>Bienvenido al Chatbot de Duilius</h2>
+    </div>
+
+    <!-- Mensajes del Chatbot -->
+    <div id="chatbot-messages">
+        <div class="message bot">
+            ¡Hola! Soy tu asistente virtual. Puedes preguntarme sobre los gastos, stock o ingresos de tu empresa.
+        </div>
+    </div>
+
+    <!-- Input del Usuario -->
+    <div id="chatbot-input-container">
+        <input
+            id="chatbot-input"
+            type="text"
+            placeholder="Escribe tu pregunta..."
+            _="on keydown[key is 'Enter'] sendMessage()"
+        />
+        <button id="send-button" onclick="sendMessage()">ENVIAR</button>
+    </div>
+
+    <!-- Pie de Página -->
+    <div id="chatbot-footer">
+        <a href="https://www.profeduilio.cloud" target="_blank">Powered by Duilius</a>
+    </div>
+</div>
+
+<!-- Botón para abrir el modal -->
+<button id="open-chatbot" onclick="openChatbot()">zzzzAbrir Chatbot</button>
+
+
+<!-- ********************  MENÚ LATERAL DERECHO **************************-->
+
+
+
 {% endblock %}
 
 {% block extra_scripts %}
-<script src="{{ url_for('static', path='js/adjustments.js') }}"></script>
-<script src="{{ url_for('static', path='js/relationships.js') }}"></script>
+<!--<script src="{{ url_for('static', path='js/adjustments.js') }}"></script>
+<script src="{{ url_for('static', path='js/state.manager.js') }}"></script>
+-->
+<!-- Primero las dependencias externas -->
+<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+<script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
+
+<!-- Servicios base -->
+<script src="/static/js/xero_organization_service.js"></script>
+<script src="/static/js/xero_balance_service.js"></script>  <!-- Agregar esta línea -->
+
+<!-- Nuevos módulos de lending -->
+<script src="{{ url_for('static', path='js/organization-search.js') }}"></script>
+<script src="{{ url_for('static', path='js/lending-state.js') }}"></script>
+<script src="{{ url_for('static', path='js/lending-ui.js') }}"></script>
+
+<!-- Módulos existentes -->
+<script src="{{ url_for('static', path='js/tabs.js') }}"></script>
+<script src="{{ url_for('static', path='js/lending_tables.js') }}"></script>
+
+<!-- Scripts que dependen de los anteriores -->
 <script src="{{ url_for('static', path='js/balance.js') }}"></script>
+<script src="{{ url_for('static', path='js/chatDuilius.js') }}"></script>
+<script src="{{ url_for('static', path='js/cuadro_combinado.js') }}"></script>
+
+<!-- Inicialización -->
+<script src="{{ url_for('static', path='js/initialization.js') }}"></script>
 <!-- resto del script existente -->
 
 <script>
@@ -141,3 +215,7 @@
     });
 </script>
 {% endblock %}
+
+
+</body>
+</html>
