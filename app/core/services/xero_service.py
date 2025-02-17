@@ -1,4 +1,5 @@
 # api/xero.py
+import httpx
 from fastapi import APIRouter, Depends, HTTPException
 import xero_python
 from xero_python.api_client import ApiClient
@@ -7,17 +8,21 @@ from xero_python.api_client.oauth2 import OAuth2Token
 
 router = APIRouter()
 
-@router.get("/authorize")
-async def authorize_xero(user: User = Depends(get_current_user)):
-    config = Configuration(
-        oauth2_token=OAuth2Token(
-            client_id=settings.XERO_CLIENT_ID,
-            client_secret=settings.XERO_CLIENT_SECRET
-        )
-    )
-    api_client = ApiClient(configuration=config)
-    
-    # Generate authorization URL
-    auth_url = f"https://login.xero.com/identity/connect/authorize?response_type=code&client_id={settings.XERO_CLIENT_ID}&redirect_uri={settings.REDIRECT_URI}&scope=offline_access accounting.transactions accounting.contacts"
-    
-    return {"authorization_url": auth_url}
+# En app/services/xero_service.py o donde tengas tus servicios Xero
+class XeroService:
+   async def get_organization_details(self, access_token: str, tenant_id: str):
+       """Obtiene detalles de la organización desde la API de Xero"""
+       url = "https://api.xero.com/api.xro/2.0/Organisation"
+       headers = {
+           "Authorization": f"Bearer {access_token}",
+           "Xero-tenant-id": tenant_id,
+           "Accept": "application/json"
+       }
+       
+       async with httpx.AsyncClient() as client:
+           response = await client.get(url, headers=headers)
+           response.raise_for_status()
+           data = response.json()
+           return data["Organisations"][0]  # Retorna la primera organización
+
+xero_service = XeroService()
