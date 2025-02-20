@@ -1,5 +1,5 @@
 from fastapi import FastAPI, APIRouter, Depends, Request, HTTPException, Response, Query
-from fastapi.responses import RedirectResponse, HTMLResponse
+from fastapi.responses import RedirectResponse, HTMLResponse, JSONResponse
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from app.db.database import get_db
@@ -81,21 +81,31 @@ async def connect_xero(response: Response):
 
 @router.get("/callback")
 async def oauth_callback(request: Request, code: str, db: Session = Depends(get_db)):
-   auth_result = await xero_auth_service.handle_oauth_callback(db, code)
-   print("Token to be set in cookie:", auth_result["token"][:20] + "...")
-   response = RedirectResponse(url="/auth/dashboard")
-   
-   response.set_cookie(
-       key="session_xero",
-       value=auth_result["token"],
-       httponly=False,  # Temporalmente false para debug
-       secure=False,    # Temporalmente false para debug
-       path="/",
-       max_age=60 * 60
-   )
-   
-   print("Cookie set. Response headers:", response.headers)
-   return response
+   try:
+    auth_result = await xero_auth_service.handle_oauth_callback(db, code)
+    print("Token to be set in cookie:", auth_result["token"][:10] + "...")
+    print("Auth result received successfully") 
+
+    response = RedirectResponse(url="/auth/dashboard")
+
+    print("Created redirect response")
+    
+    response.set_cookie(
+        key="session_xero",
+        value=auth_result["token"],
+        httponly=True,  # Temporalmente false para debug
+        secure=True,    # Temporalmente false para debug
+        path="/",
+        max_age=60 * 60
+    )
+    
+    print("Cookie set successfully")
+    print("Cookie set. Response headers:", response.headers)
+    return response
+   except Exception as e:
+        print(f"Detailed error in oauth_callback: {str(e)}")
+        print(f"Error type: {type(e)}")
+        raise
 
 @router.get("/dashboard")
 async def dashboard(request: Request, db: Session = Depends(get_db)):
@@ -151,17 +161,72 @@ async def dashboard(request: Request, db: Session = Depends(get_db)):
     response.set_cookie("session_xero", new_session_token)
     return response
 
+
+#******** RECONEXIÓN SILENCIONSA******** RECONEXIÓN SILENCIONSA******** RECONEXIÓN SILENCIONSA******** RECONEXIÓN SILENCIONSA
+@router.post("/refresh")
+async def refresh_session(request: Request, db: Session = Depends(get_db)):
+    try:
+        session_token = request.cookies.get("session_xero")
+        if not session_token:
+            raise HTTPException(401, "Session not found")
+
+        session_data = xero_auth_service.decode_session_token(session_token)
+        
+        # Verificar y refrescar token de Xero si es necesario
+        token = db.query(XeroToken).filter(
+            XeroToken.organization_id == session_data["org_id"]
+        ).first()
+        
+        token = await xero_auth_service.refresh_token_if_needed(token, db)
+        
+        # Generar nuevo token de sesión
+        new_session = xero_auth_service.encode_session_token(session_data)
+        
+        response = JSONResponse({"status": "success"})
+        response.set_cookie("session_xero", new_session)
+        return response
+
+    except Exception as e:
+        raise HTTPException(401, "Session expired")
+
+@router.get("/auth/login-redirect")
+async def login_redirect():
+    return {"url": "/auth/login"}
+
+
+#******* LOGOUT ******* LOGOUT ******* LOGOUT ******* LOGOUT ******* LOGOUT ******* LOGOUT 
 @router.post("/logout")
 async def logout(
     request: Request,
+    response: Response,
     db: Session = Depends(get_db)
 ):
     """Handle user logout."""
-    response = RedirectResponse(url="/", status_code=302)
-    response.delete_cookie("session")
-    response.delete_cookie("oauth_state")
-    
-    return response
+    try:
+        # Eliminar cookies existentes
+        response = RedirectResponse(url="/", status_code=302)
+        response.delete_cookie("session")
+        response.delete_cookie("oauth_state")
+        response.delete_cookie("session_xero")  # Asegurar que se elimina también esta cookie
+        
+        # Obtener y limpiar token si existe
+        session_token = request.cookies.get("session_xero")
+        if session_token:
+            try:
+                session_data = xero_auth_service.decode_session_token(session_token)
+                # Aquí podrías agregar lógica adicional para limpiar tokens en BD
+            except:
+                pass  # Si el token ya está inválido, continuamos con el logout
+        
+        return response
+        
+    except Exception as e:
+        # Incluso si hay error, intentamos limpiar todo
+        response = RedirectResponse(url="/", status_code=302)
+        response.delete_cookie("session")
+        response.delete_cookie("oauth_state")
+        response.delete_cookie("session_xero")
+        return response
 
 @router.get("/check-auth")
 async def check_auth(request: Request):
